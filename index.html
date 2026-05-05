@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBOS Home+</title>
+<style>
+:root {
+  --bg: #f5f1ea;
+  --bg-deeper: #ebe5da;
+  --bg-card: #fdfaf4;
+  --ink: #2b2622;
+  --ink-soft: #5a544c;
+  --ink-faint: #8a8278;
+  --line: #d4cdbf;
+  --accent: #6b8e7f;
+  --accent-deep: #4a6e5e;
+  --warmth: #c9a572;
+  --warmth-soft: #e8d9bf;
+  --alert: #b04545;
+  --alert-bg: #f5e6e2;
+  --safeguard: #8b6332;
+  --safeguard-bg: #f0e6d4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  font-size: 17px;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 32px 96px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 56px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.brand-mark { font-size: 14px; font-style: italic; color: var(--ink-soft); }
+.brand-mark strong { font-style: normal; font-weight: 600; color: var(--ink); margin-right: 6px; }
+.brand-meta { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.05em; text-transform: uppercase; }
+.card {
+  background: var(--bg-card);
+  padding: 48px 44px;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 var(--line), 0 4px 20px rgba(43, 38, 34, 0.04);
+  border: 1px solid var(--line);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+h1 { font-size: 32px; font-weight: 400; line-height: 1.25; margin-bottom: 24px; letter-spacing: -0.01em; }
+h2 { font-size: 22px; font-weight: 400; line-height: 1.35; margin-bottom: 20px; }
+h3 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin-bottom: 12px; }
+p { margin-bottom: 16px; }
+p.soft { color: var(--ink-soft); }
+p.lead { font-size: 19px; line-height: 1.6; margin-bottom: 28px; }
+.question-text {
+  font-size: 26px; font-weight: 400; line-height: 1.4; margin-bottom: 32px; letter-spacing: -0.005em;
+}
+.question-note {
+  font-style: italic; color: var(--ink-soft); font-size: 16px; margin-bottom: 24px;
+  padding-left: 16px; border-left: 2px solid var(--warmth);
+}
+.reflection {
+  font-size: 19px; font-style: italic; line-height: 1.55; padding: 24px 28px;
+  background: var(--warmth-soft); border-radius: 2px; margin: 24px 0; position: relative;
+}
+.reflection::before {
+  content: ''; position: absolute; left: 0; top: 24px; bottom: 24px; width: 3px; background: var(--warmth);
+}
+textarea, input[type="text"] {
+  width: 100%; font-family: inherit; font-size: 17px; line-height: 1.6; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 2px;
+  padding: 16px 18px; resize: vertical; min-height: 120px; margin-bottom: 16px;
+  transition: border-color 0.2s ease;
+}
+input[type="text"] { min-height: auto; }
+textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--accent); }
+.button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.button-row.stack { flex-direction: column; }
+button {
+  font-family: inherit; font-size: 16px; padding: 14px 24px;
+  border: 1px solid var(--line); background: var(--bg-card); color: var(--ink);
+  cursor: pointer; border-radius: 2px; transition: all 0.18s ease; line-height: 1.4;
+}
+button:hover { border-color: var(--accent); background: var(--bg-deeper); }
+button.primary { background: var(--ink); color: var(--bg-card); border-color: var(--ink); }
+button.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+button.ghost {
+  background: transparent; border-color: transparent; color: var(--ink-soft);
+  text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line); padding: 14px 8px;
+}
+button.ghost:hover { color: var(--ink); background: transparent; text-decoration-color: var(--accent); }
+.scale-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.scale-row button { flex: 1; min-width: 180px; text-align: left; padding: 18px 22px; }
+.scale-row button.selected { background: var(--accent); color: white; border-color: var(--accent); }
+.voice-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 14px; color: var(--ink-soft); }
+.voice-button {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: 14px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink-soft); cursor: pointer; border-radius: 2px;
+}
+.voice-button.recording { background: var(--accent); color: white; border-color: var(--accent); }
+.voice-status { font-style: italic; color: var(--ink-faint); }
+.skip-link {
+  display: inline-block; margin-top: 12px; font-size: 14px; color: var(--ink-faint);
+  text-decoration: underline; text-underline-offset: 4px; cursor: pointer; background: none; border: none;
+  padding: 8px 0; font-family: inherit;
+}
+.progress {
+  font-size: 12px; color: var(--ink-faint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px;
+}
+.quote {
+  font-style: italic; padding: 20px 24px; background: var(--bg-deeper);
+  border-left: 3px solid var(--warmth); margin: 24px 0; font-size: 16px; color: var(--ink-soft);
+}
+.alert-card { background: var(--alert-bg); border: 1px solid var(--alert); padding: 36px 36px; border-radius: 2px; }
+.alert-card h2 { color: var(--alert); }
+.alert-card.safeguard { background: var(--safeguard-bg); border-color: var(--safeguard); }
+.alert-card.safeguard h2 { color: var(--safeguard); }
+.resource-list { list-style: none; padding: 0; margin: 24px 0; }
+.resource-list li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.resource-list li:last-child { border-bottom: none; }
+.resource-list strong { display: block; margin-bottom: 4px; font-weight: 600; }
+.resource-list span { color: var(--ink-soft); font-size: 15px; }
+.report { padding: 0; }
+.report h2 { font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin: 28px 0 12px; }
+.report-list { list-style: none; padding: 0; }
+.report-list li { padding: 10px 0; }
+.report-list li::before { content: '— '; color: var(--ink-faint); margin-right: 4px; }
+.loading { display: inline-flex; align-items: center; gap: 12px; color: var(--ink-faint); font-style: italic; font-size: 16px; }
+.loading-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint); animation: pulse 1.4s ease-in-out infinite; }
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.footer-info {
+  margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line);
+  font-size: 12px; color: var(--ink-faint); display: flex; justify-content: space-between;
+}
+.linkage-statement {
+  background: white; border: 2px solid var(--warmth); padding: 28px 32px; margin: 24px 0;
+  font-size: 18px; line-height: 1.55; font-style: italic;
+}
+.linkage-rule {
+  background: var(--bg-deeper); padding: 20px 24px; border-left: 3px solid var(--accent);
+  font-size: 15px; margin: 20px 0; color: var(--ink-soft);
+}
+.dev-toggle {
+  margin-top: 24px; padding: 16px; background: var(--bg-deeper);
+  border: 1px dashed var(--ink-faint); border-radius: 2px; font-size: 13px; color: var(--ink-soft);
+}
+.dev-toggle label { display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 6px 0; }
+@media print {
+  body { background: white; }
+  .app { padding: 0; max-width: 100%; }
+  .brand, .footer-info, .button-row, .voice-controls, .skip-link { display: none !important; }
+  .card { box-shadow: none; border: none; padding: 0; }
+}
+@media (max-width: 640px) {
+  .app { padding: 32px 20px 64px; }
+  .card { padding: 32px 24px; }
+  h1 { font-size: 26px; }
+  .question-text { font-size: 22px; }
+  .scale-row button { min-width: 100%; }
+  .button-row { flex-direction: column; }
+  .button-row button { width: 100%; }
+}
+.fade-in { animation: gentle-rise 0.5s ease-out; }
+@keyframes gentle-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+select { font-family: inherit; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="brand">
+    <div class="brand-mark"><strong>OBOS Home+</strong> a warm porch</div>
+    <div class="brand-meta" id="callMeter">v1.1 prototype</div>
+  </header>
+  <main id="screen" class="card fade-in"></main>
+  <footer class="footer-info">
+    <span>Built for OBOS · person first</span>
+    <span id="ironCurtainStatus">Iron Curtain: enforced</span>
+  </footer>
+</div>
+
+<script>
+/* OBOS Home+ V1.1 — faithful to OBOS_Care_Tool.md V16.1
+   Iron Curtain enforced at data-model and API-call layers.
+   Updated with logic fixes for model deployment and robust linkage string extraction. */
+
+const QUESTIONS = {
+  s1: { title: "About You", questions: [
+    { key: "s1q1", text: "What is most important to you in your day-to-day life right now?", type: "open" },
+    { key: "s1q2", text: "What does a good day look like for you?", type: "open" },
+    { key: "s1q3", text: "What are you most proud of in how you manage your life?", type: "open" },
+    { key: "s1q4", text: "Who matters most to you? Who do you like to stay connected with?", type: "open" },
+    { key: "s1q5", text: "Is there something you have always done, or always been, that feels very much like you?", type: "open" }
+  ]},
+  s2: { title: "How Things Are Going", questions: [
+    { key: "s2q1", text: "What are you enjoying most at the moment?", type: "open" },
+    { key: "s2q2", text: "Is there anything that feels harder than it used to?", type: "open", optional: true },
+    { key: "s2q3", text: "How do you feel about getting around and doing physical things day to day?",
+      type: "scale", options: ["It's going well", "It varies", "It feels harder than it was"] },
+    { key: "s2q4", text: "How do you feel about your memory and concentration?",
+      type: "scale", options: ["It's going well", "It varies", "It feels harder than it was"],
+      note: "This is not a memory test. If memory support would be useful to you, there are gentle ways to help with that." },
+    { key: "s2q5", text: "Do you ever feel lonely or less connected to people than you would like?", type: "open", optional: true },
+    { key: "s2q6", text: "How confident do you feel about managing things at home independently?",
+      type: "scale", options: ["Very confident", "It varies", "Less confident than I was"] }
+  ]},
+  s3: { title: "What Matters About the Future", questions: [
+    { key: "s3q1", text: "If things stay broadly as they are, what would you most want to make sure stays the same?", type: "open" },
+    { key: "s3q2", text: "Is there anything you would love to do more of, or get back to?", type: "open", optional: true },
+    { key: "s3q3", text: "When you think about the future, is there anything you hope for?", type: "open", optional: true },
+    { key: "s3q4", text: "Is there anything about the future that you find yourself worrying about?", type: "open", optional: true }
+  ]},
+  s4: { title: "About Your Home", questions: [
+    { key: "s4q1", text: "How are things with your home — your apartment, the building, the way you get in and out?", type: "open" },
+    { key: "s4q2", text: "Is there anything in or around your home that feels harder, or more frustrating, than it should?", type: "open", optional: true },
+    { key: "s4q3", text: "How are things with your neighbours and the wider building community?", type: "open", optional: true },
+    { key: "s4q4", text: "Is there anything else about your home or surroundings you would like OBOS to know?", type: "open", optional: true }
+  ]}
+};
+
+let session = {
+  anthropicApiKey: null,
+  state: 0,
+  name: null,
+  honorific: null,
+  vinterTryggActive: false,
+  wellnessArc: { answers: {}, skipCount: 0, assetCaptured: false, assetTalent: null, assetConsent: null },
+  homeArc: { answers: {}, skipCount: 0 },
+  linkage: { candidateDetected: false, paraphrasedFragment: null, homeIssueQuoted: null, residentConfirmed: false, fixedStatement: null },
+  safetyFlags: { crisis: false, safeguarding: false, hostility: false, anyFiredThisSession: false },
+  pulseContact: null,
+  callCount: 0,
+  estCost: 0,
+  wellnessReport: null,
+  homeReport: null,
+  engagementLevel: 0,
+  _linkageApproved: false,
+  _suppressHomeReport: false
+};
+
+const MODEL = 'claude-3-opus-20240229'; // Updated to a working API model string for testing
+const COST_PER_CALL_EST = 0.04;
+const VOICE_SILENCE_MS = 5000;
+const STILL_LISTENING_MS = 2000;
+const SKIP_NOTE_THRESHOLD = 3;
+const SKIP_OFFRAMP_THRESHOLD = 6;
+
+const SCREEN = document.getElementById('screen');
+const CALL_METER = document.getElementById('callMeter');
+
+let currentSection = null;
+let currentQIndex = 0;
+
+function setScreen(html) {
+  SCREEN.classList.remove('fade-in');
+  void SCREEN.offsetWidth;
+  SCREEN.innerHTML = html;
+  SCREEN.classList.add('fade-in');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateMeter() { CALL_METER.textContent = `${session.callCount} calls · ~$${session.estCost.toFixed(2)}`; }
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function addressForm() {
+  if (session.name && session.honorific) return `${session.honorific} ${session.name}`;
+  if (session.name) return session.name;
+  return null;
+}
+
+async function callClaude(systemPrompt, userMessage, maxTokens = 600) {
+  if (!session.anthropicApiKey) throw new Error('No API key configured');
+  session.callCount++;
+  session.estCost += COST_PER_CALL_EST;
+  updateMeter();
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': session.anthropicApiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: MODEL, max_tokens: maxTokens, system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }]
+    })
+  });
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`API error ${response.status}: ${err}`);
+  }
+  const data = await response.json();
+  return data.content[0].text.trim();
+}
+
+const CRISIS_PROMPT = `You are a safety classifier for a welfare-conversation tool used by older residents in Norway. Evaluate ONE answer to ONE question and return a binary verdict.
+
+Return EXACTLY one word: either "FIRE" or "PASS".
+
+Return FIRE only on EXPLICIT, PRESENT-TENSE, SELF-DIRECTED statements of:
+- Suicidal ideation or planning
+- Active self-harm
+- Acute hopelessness framed as "nothing to live for" / "no point continuing"
+- Imminent danger to self
+
+Do NOT fire on: general sadness, grief, loneliness, past-tense difficulty, metaphorical language, fictional or historical references, worry about the future, frustration, fatigue, or expressions of low mood without active risk.
+
+When in doubt, return PASS.`;
+
+const SAFEGUARDING_PROMPT = `You are a safeguarding classifier for a welfare-conversation tool used by older residents in Norway. Evaluate ONE answer to ONE question and return a binary verdict.
+
+Return EXACTLY one word: either "FIRE" or "PASS".
+
+Return FIRE only on EXPLICIT, PRESENT-TENSE disclosures of:
+- Physical, psychological, financial, or sexual abuse
+- Coercive control by a family member, carer, or other person
+- Enforced isolation by another person
+- Neglect by a carer
+- Fear of a specific named person in the context of harm
+
+Do NOT fire on: general loneliness, grief, conflict-without-fear, neighbour disputes, frustration, ordinary family disagreement, references to past events without ongoing risk.
+
+When in doubt, return PASS.`;
+
+const HOSTILITY_PROMPT = `You are a consent-withdrawal classifier for a welfare-conversation tool. Evaluate ONE answer and return a binary verdict.
+
+Return EXACTLY one word: either "FIRE" or "PASS".
+
+Return FIRE if the resident is expressing:
+- Withdrawal of consent ("I don't want to do this", "stop", "leave me alone")
+- Refusal of the conversation itself
+- Active hostility toward the tool or process
+
+Do NOT fire on: a resident saying they don't know how to answer, expressing uncertainty, declining one specific question (that is what skip is for), being terse, being matter-of-fact.
+
+When in doubt, return PASS.`;
+
+async function runClassifier(systemPrompt, answer) {
+  try {
+    const verdict = await callClaude(systemPrompt, `Answer: "${answer}"\n\nVerdict:`, 10);
+    return verdict.trim().toUpperCase().startsWith('FIRE');
+  } catch (e) {
+    console.warn('Classifier error:', e);
+    return false;
+  }
+}
+
+async function runAllClassifiers(answer) {
+  const [crisis, safeguarding, hostility] = await Promise.all([
+    runClassifier(CRISIS_PROMPT, answer),
+    runClassifier(SAFEGUARDING_PROMPT, answer),
+    runClassifier(HOSTILITY_PROMPT, answer)
+  ]);
+  return { crisis, safeguarding, hostility };
+}
+
+function reflectionSystemPrompt(arc) {
+  const arcDescription = arc === 'wellness'
+    ? 'You are reflecting on wellbeing, life, values, and what matters to the resident (Sections 1-3).'
+    : 'You are reflecting on the resident\'s home, building, and surroundings (Section 4).';
+  return `You are a Motivational Interviewing reflection layer for OBOS Home+, a welfare conversation tool used by older residents in Norway. ${arcDescription}
+
+Write ONE short reflection (1-2 sentences) that names what was heard, in MI register. Warm, unhurried, never analytical.
+
+HARDLINE RULES (do not break any):
+- Do not advise, warn, or diagnose.
+- Do not recommend services.
+- Do not include any phone number, URL, address, or organisation name.
+- Do not mention any US resource.
+- Do not mention OBOS, Housing Officer, Wellness Report, or Home Report by name.
+- Do not volunteer the resident for any activity.
+- Do not classify the resident as an asset or community resource.
+- Do not name a forecast or any weather information.
+- Do not surface or paraphrase content from a different section than the one being reflected on. (Iron Curtain enforcement.)
+
+STYLE:
+- 1-2 sentences only.
+- Warm, plain, no clinical language.
+- Reflect what was said; do not interpret beneath it.
+- Do not begin with "It sounds like" or "I hear that" — write naturally.
+- Do not end on a question.
+- Do not suggest what the resident should do next.
+
+Output ONLY the reflection text. No preamble, no quotes, no labels.`;
+}
+
+async function generateReflection(arc, questionText, answer, priorContext = []) {
+  let userMessage = '';
+  if (priorContext.length > 0) {
+    userMessage += 'Earlier in this conversation:\n';
+    priorContext.slice(-2).forEach(p => { userMessage += `Q: ${p.q}\nA: ${p.a}\n\n`; });
+  }
+  userMessage += `Now this exchange:\nQ: ${questionText}\nA: ${answer}\n\nWrite a 1-2 sentence MI reflection.`;
+  return await callClaude(reflectionSystemPrompt(arc), userMessage, 200);
+}
+
+function findQuestionByKey(key) {
+  for (const sec of Object.values(QUESTIONS)) {
+    const q = sec.questions.find(q => q.key === key);
+    if (q) return q;
+  }
+  return null;
+}
+
+/* STATE 0 — LANDING */
+function renderLanding() {
+  setScreen(`
+    <h1>Welcome.</h1>
+    <p class="lead">This is a quiet conversation about how things are going for you, in your home and in your day-to-day life.</p>
+    <p>It takes about twenty minutes. There is no right or wrong way to use it. You can stop at any point. Nothing you share is stored anywhere.</p>
+    <p class="soft">When you're ready.</p>
+    <div class="button-row">
+      <button class="primary" onclick="renderApiKey()">Begin</button>
+      <button onclick="showAbout()">A little more about this tool first</button>
+    </div>
+  `);
+}
+function showAbout() {
+  setScreen(`
+    <h2>About OBOS Home+</h2>
+    <p>This tool offers you a space to reflect on how your life and your home are working for you. It listens, and it produces two short reports for you to keep — one about your wellbeing, one about your home.</p>
+    <p>You decide what happens with those reports. They are yours. You may share them with your GP, your OBOS Housing Officer, or no one at all. The tool does not send anything anywhere unless you choose to.</p>
+    <p>The conversation is voice-first, but you can type if you prefer. You may skip any question. You may end the conversation at any time.</p>
+    <div class="quote">Nothing you share is stored on any server. When you close this page, everything is gone.</div>
+    <div class="button-row">
+      <button class="primary" onclick="renderApiKey()">I'm ready to begin</button>
+      <button onclick="renderLanding()">Back</button>
+    </div>
+  `);
+}
+
+/* STATE 0.5 — API KEY */
+function renderApiKey() {
+  setScreen(`
+    <h2>One technical step</h2>
+    <p>This is a V1 prototype. The conversation is powered by Anthropic's Claude. To run it, please paste your Anthropic API key below.</p>
+    <p class="soft">The key lives only in this browser tab. It is never stored anywhere, never sent to any server other than Anthropic's, and is destroyed when you close this tab.</p>
+    <p class="soft">In the deployed version, OBOS funds the operator (Assistiv Systems Ltd) to provide this — residents will not need an API key.</p>
+    <input type="text" id="apiKey" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+    <div class="button-row">
+      <button class="primary" onclick="acceptApiKey()">Continue</button>
+    </div>
+    <p class="soft" style="font-size:13px;margin-top:24px;">A full session uses ~100 API calls and costs roughly $4-5 in API charges.</p>
+  `);
+  setTimeout(() => document.getElementById('apiKey')?.focus(), 100);
+}
+function acceptApiKey() {
+  const v = document.getElementById('apiKey').value.trim();
+  if (!v.startsWith('sk-ant-')) {
+    alert('That does not look like an Anthropic API key. They start with sk-ant-');
+    return;
+  }
+  session.anthropicApiKey = v;
+  renderThreshold();
+}
+
+/* STATE 1 — THRESHOLD */
+function renderThreshold() {
+  setScreen(`
+    <h2>How would you like to be addressed?</h2>
+    <p class="soft">There is no need to give a name. Whatever feels right is right.</p>
+    <h3>Use a first name</h3>
+    <input type="text" id="firstName" placeholder="e.g. Lars">
+    <div style="height:20px"></div>
+    <h3>Or use a formal title</h3>
+    <select id="honorific" style="font-size:17px;padding:14px 18px;background:var(--bg);border:1px solid var(--line);border-radius:2px;width:100%;color:var(--ink);margin-bottom:12px;">
+      <option value="">— choose —</option>
+      <option value="Mr">Mr</option>
+      <option value="Mrs">Mrs</option>
+      <option value="Ms">Ms</option>
+      <option value="Mx">Mx</option>
+      <option value="Dr">Dr</option>
+      <option value="Hr">Hr</option>
+      <option value="Fru">Fru</option>
+    </select>
+    <input type="text" id="surname" placeholder="Surname">
+    <div class="button-row">
+      <button class="primary" onclick="acceptThresholdName()">Continue</button>
+      <button onclick="skipThreshold()">I'd prefer not to say</button>
+    </div>
+  `);
+}
+function acceptThresholdName() {
+  const fn = document.getElementById('firstName').value.trim();
+  const hon = document.getElementById('honorific').value;
+  const sn = document.getElementById('surname').value.trim();
+  if (fn) { session.name = fn; session.honorific = null; }
+  else if (hon && sn) { session.name = sn; session.honorific = hon; }
+  else { skipThreshold(); return; }
+  renderGreeting();
+}
+function skipThreshold() {
+  session.name = null; session.honorific = null;
+  renderGreeting();
+}
+
+/* STATE 2 — GREETING */
+function renderGreeting() {
+  const addr = addressForm();
+  const intro = addr ? `Let's make a start, ${escapeHtml(session.name)}, at your own pace and in your own time.`
+                     : `Let's make a start, at your own pace and in your own time.`;
+  setScreen(`
+    <h1>${intro}</h1>
+    <p>This is a conversation in four parts. The first three are about your life, what matters to you, and how things are going. The fourth is about your home.</p>
+    <p>We'll go gently. You can speak or type. You can skip anything. You can stop whenever you want.</p>
+    <div class="dev-toggle">
+      <strong>Prototype demo controls:</strong>
+      <label><input type="checkbox" id="vinterToggle"> Simulate winter weather (Vinter-Trygg path)</label>
+      <p style="margin:6px 0 0 0;font-size:12px;">In the deployed version, this is determined by a live Yr.no call for your locale.</p>
+    </div>
+    <div class="button-row">
+      <button class="primary" onclick="startConversation()">Begin</button>
+    </div>
+  `);
+}
+function startConversation() {
+  session.vinterTryggActive = document.getElementById('vinterToggle')?.checked || false;
+  if (session.vinterTryggActive) renderVinterGreeting();
+  else enterSection('s1');
+}
+function renderVinterGreeting() {
+  setScreen(`
+    <h2>A note before we begin</h2>
+    <p>The forecast for your area shows cold and snow in the next 24 hours. If you'd like, we can include a brief winter check-in when we get to the questions about your home — about heating, and about the paths to your building.</p>
+    <p class="soft">Or we can simply have the standard conversation. Both are fine.</p>
+    <div class="button-row">
+      <button class="primary" onclick="acceptVinter(true)">Yes, include a winter check-in</button>
+      <button onclick="acceptVinter(false)">No, the standard conversation</button>
+    </div>
+  `);
+}
+function acceptVinter(yes) { session.vinterTryggActive = yes; enterSection('s1'); }
+
+/* STATE 3 / 7 — QUESTION LOOPS */
+function enterSection(sectionKey) {
+  currentSection = sectionKey;
+  currentQIndex = 0;
+  renderSectionIntro(sectionKey);
+}
+function renderSectionIntro(sectionKey) {
+  const section = QUESTIONS[sectionKey];
+  const intros = {
+    s1: 'These first questions are about you — what matters to you, what a good day looks like.',
+    s2: 'Now a few questions about how things are going at the moment.',
+    s3: 'Now some questions about what matters to you about the future.',
+    s4: 'Now some questions about your home and the building you live in.'
+  };
+  setScreen(`
+    <div class="progress">Part ${sectionKey.replace('s','')} of 4 · ${section.title}</div>
+    <h2>${intros[sectionKey]}</h2>
+    <p class="soft">${section.questions.length} questions in this part. You can skip any of them.</p>
+    <div class="button-row">
+      <button class="primary" onclick="renderQuestion()">Begin part ${sectionKey.replace('s','')}</button>
+    </div>
+  `);
+}
+function getCurrentQuestion() { return QUESTIONS[currentSection].questions[currentQIndex]; }
+
+function renderQuestion() {
+  const q = getCurrentQuestion();
+  if (!q) { onSectionComplete(); return; }
+  const totalQ = QUESTIONS[currentSection].questions.length;
+  const optional = q.optional ? ' <span style="color:var(--ink-faint);font-style:italic;font-size:14px;">(optional)</span>' : '';
+  let questionText = escapeHtml(q.text);
+  if (q.key === 's4q1' && session.vinterTryggActive) {
+    questionText += '<br><br><span style="font-size:18px;color:var(--ink-soft);">Given the cold weather coming, you might also want to mention how the heating is keeping up, or whether the paths to the building are clear.</span>';
+  }
+  if (q.type === 'scale') renderScaleQuestion(q, questionText, totalQ);
+  else renderOpenQuestion(q, questionText, totalQ, optional);
+}
+
+function renderOpenQuestion(q, questionText, totalQ, optional) {
+  setScreen(`
+    <div class="progress">Question ${currentQIndex + 1} of ${totalQ} · ${QUESTIONS[currentSection].title}</div>
+    <div class="question-text">${questionText}${optional}</div>
+    ${q.note ? `<div class="question-note">${escapeHtml(q.note)}</div>` : ''}
+    <div class="voice-controls">
+      <button class="voice-button" id="voiceBtn" onclick="toggleVoice()">🎤 Speak your answer</button>
+      <span class="voice-status" id="voiceStatus"></span>
+    </div>
+    <textarea id="answer" placeholder="Take your time, in your own words..." rows="5"></textarea>
+    <div class="button-row">
+      <button class="primary" onclick="submitAnswer()">Continue</button>
+      <button class="ghost" onclick="skipQuestion()">Skip this one</button>
+    </div>
+  `);
+  setTimeout(() => document.getElementById('answer')?.focus(), 200);
+}
+
+function renderScaleQuestion(q, questionText, totalQ) {
+  setScreen(`
+    <div class="progress">Question ${currentQIndex + 1} of ${totalQ} · ${QUESTIONS[currentSection].title}</div>
+    <div class="question-text">${questionText}</div>
+    ${q.note ? `<div class="question-note">${escapeHtml(q.note)}</div>` : ''}
+    <div class="scale-row">
+      ${q.options.map((opt, i) => `<button onclick="selectScale(${i}, this)">${escapeHtml(opt)}</button>`).join('')}
+    </div>
+    <h3 style="margin-top:24px;">Say more, if you would like to (optional)</h3>
+    <textarea id="sayMore" placeholder="Or skip — the choice above is enough on its own." rows="3"></textarea>
+    <div class="button-row">
+      <button class="primary" onclick="submitScaleAnswer()" id="submitBtn" disabled>Continue</button>
+      <button class="ghost" onclick="skipQuestion()">Skip this one</button>
+    </div>
+  `);
+}
+
+let _selectedScaleIdx = null;
+function selectScale(idx, btn) {
+  _selectedScaleIdx = idx;
+  document.querySelectorAll('.scale-row button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('submitBtn').disabled = false;
+}
+async function submitScaleAnswer() {
+  const q = getCurrentQuestion();
+  const choice = q.options[_selectedScaleIdx];
+  const sayMore = document.getElementById('sayMore').value.trim();
+  const fullAnswer = sayMore ? `${choice}. ${sayMore}` : choice;
+  _selectedScaleIdx = null;
+  await processAnswer(fullAnswer);
+}
+async function submitAnswer() {
+  const answer = document.getElementById('answer').value.trim();
+  if (!answer) { skipQuestion(); return; }
+  await processAnswer(answer);
+}
+
+function skipQuestion() {
+  const arcData = currentSection === 's4' ? session.homeArc : session.wellnessArc;
+  arcData.skipCount++;
+  if (arcData.skipCount === SKIP_OFFRAMP_THRESHOLD) { renderOffRamp(); return; }
+  if (arcData.skipCount === SKIP_NOTE_THRESHOLD) { renderSkipNote(); return; }
+  advanceQuestion();
+}
+function renderSkipNote() {
+  setScreen(`
+    <h2>That's fine.</h2>
+    <p>Skipping is part of how this conversation works. You don't owe the tool an answer.</p>
+    <p class="soft">When you're ready, we'll continue.</p>
+    <div class="button-row"><button class="primary" onclick="advanceQuestion()">Continue</button></div>
+  `);
+}
+function renderOffRamp() {
+  setScreen(`
+    <h2>You've skipped a few in a row.</h2>
+    <p>That's a perfectly valid way to use this tool. Sometimes the questions don't fit, or it's not the right time.</p>
+    <p>You can carry on if you'd like to, or stop here. If you stop, you'll still get whatever's been gathered so far.</p>
+    <div class="button-row">
+      <button onclick="advanceQuestion()">Carry on</button>
+      <button onclick="endEarly()">End here</button>
+    </div>
+  `);
+}
+
+// Fixed endEarly logic
+function endEarly() {
+  if (currentSection === 's4') {
+    if (Object.keys(session.homeArc.answers).length > 0) {
+      generateHomeReport();
+    } else {
+      session._suppressHomeReport = true;
+      renderConsentedClick();
+    }
+  } else {
+    if (Object.keys(session.wellnessArc.answers).length > 0) {
+      generateWellnessReport();
+    } else {
+      renderThankYou();
+    }
+  }
+}
+
+async function processAnswer(answer) {
+  const q = getCurrentQuestion();
+  const arc = currentSection === 's4' ? 'home' : 'wellness';
+  const arcData = arc === 'wellness' ? session.wellnessArc : session.homeArc;
+  renderProcessing();
+  try {
+    const flags = await runAllClassifiers(answer);
+    if (flags.crisis) {
+      session.safetyFlags.crisis = true; session.safetyFlags.anyFiredThisSession = true;
+      renderCrisisScreen(); return;
+    }
+    if (flags.safeguarding) {
+      session.safetyFlags.safeguarding = true; session.safetyFlags.anyFiredThisSession = true;
+      renderSafeguardingScreen(); return;
+    }
+    if (flags.hostility) {
+      session.safetyFlags.hostility = true; session.safetyFlags.anyFiredThisSession = true;
+      renderSovereigntyPause(); return;
+    }
+    const priorContext = Object.entries(arcData.answers).map(([key, v]) => ({
+      q: findQuestionByKey(key)?.text || key, a: v.text
+    }));
+    const reflection = await generateReflection(arc, q.text, answer, priorContext);
+    arcData.answers[q.key] = { text: answer, reflection };
+    renderReflection(reflection);
+  } catch (e) {
+    console.error('processAnswer error:', e);
+    setScreen(`
+      <h2>A small hiccup</h2>
+      <p>Something went wrong reaching the conversation engine.</p>
+      <div class="quote">${escapeHtml(e.message)}</div>
+      <div class="button-row">
+        <button class="primary" onclick="renderQuestion()">Try again</button>
+        <button onclick="advanceQuestion()">Skip and continue</button>
+      </div>
+    `);
+  }
+}
+
+function renderProcessing() {
+  setScreen(`
+    <div style="display:flex;justify-content:center;align-items:center;min-height:300px;">
+      <div class="loading">
+        <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>
+        <span style="margin-left:8px;">listening...</span>
+      </div>
+    </div>
+  `);
+}
+function renderReflection(reflection) {
+  setScreen(`
+    <div class="reflection">${escapeHtml(reflection)}</div>
+    <div class="button-row"><button class="primary" onclick="advanceQuestion()">Continue</button></div>
+  `);
+}
+function advanceQuestion() {
+  currentQIndex++;
+  const sec = QUESTIONS[currentSection];
+  if (currentQIndex >= sec.questions.length) onSectionComplete();
+  else renderQuestion();
+}
+
+async function onSectionComplete() {
+  if (currentSection === 's1') return enterSection('s2');
+  if (currentSection === 's2') return enterSection('s3');
+  if (currentSection === 's3') return generateWellnessReport();
+  if (currentSection === 's4') return runCandidateLinkDetection();
+}
+
+function renderCrisisScreen() {
+  setScreen(`
+    <div class="alert-card">
+      <h2>I want to make sure you're safe.</h2>
+      <p>What you've shared sounds difficult. There are people who are trained for this — kinder, faster, and more able to help than this tool can be. Please reach out to one of them.</p>
+      <ul class="resource-list">
+        <li><strong>Mental Helse</strong><span>116 123 — open 24 hours, free to call</span></li>
+        <li><strong>Kirkens SOS</strong><span>22 40 00 40 — open 24 hours</span></li>
+        <li><strong>Emergency medical help</strong><span>113 in Norway, 112 in Sweden — if you're in immediate danger</span></li>
+      </ul>
+      <p class="soft">When you're ready, you can carry on with the conversation, or close this page. Whichever helps more.</p>
+      <div class="button-row">
+        <button class="primary" onclick="resumeFromInterrupt()">I have reached out, and I would like to continue</button>
+        <button onclick="renderThankYou()">End the conversation here</button>
+      </div>
+    </div>
+  `);
+}
+function renderSafeguardingScreen() {
+  setScreen(`
+    <div class="alert-card safeguard">
+      <h2>Thank you for telling me.</h2>
+      <p>What you've described is serious, and there are people whose role is to help with exactly this. They are trained, confidential, and on your side.</p>
+      <ul class="resource-list">
+        <li><strong>Vern for eldre</strong><span>800 30 196 — the Norwegian elder-abuse helpline</span></li>
+        <li><strong>Your kommune's tildelingskontor</strong><span>For safeguarding concerns and an in-person response</span></li>
+        <li><strong>Emergency police help</strong><span>112 — if you're in immediate danger</span></li>
+      </ul>
+      <p class="soft">When you're ready, you can carry on, or close this page.</p>
+      <div class="button-row">
+        <button class="primary" onclick="resumeFromInterrupt()">I have reached out, and I would like to continue</button>
+        <button onclick="renderThankYou()">End the conversation here</button>
+      </div>
+    </div>
+  `);
+}
+function renderSovereigntyPause() {
+  setScreen(`
+    <h2>That's heard.</h2>
+    <p>You don't have to do this. There is no version of this conversation in which you have to.</p>
+    <div class="button-row">
+      <button onclick="resumeFromInterrupt()">I'd like to carry on after all</button>
+      <button class="primary" onclick="renderThankYou()">I'd like to end here</button>
+    </div>
+  `);
+}
+function resumeFromInterrupt() { renderQuestion(); }
+
+/* STATE 4 — WELLNESS REPORT */
+async function generateWellnessReport() {
+  renderProcessing();
+  try {
+    const wellnessAnswers = Object.entries(session.wellnessArc.answers).map(([key, v]) => {
+      const q = findQuestionByKey(key);
+      return \`[\${key}] Q: \${q?.text}\nA: \${v.text}\`;
+    }).join('\n\n');
+    const systemPrompt = \`You are generating a personalised "Your Wellness Report" for a resident who has just completed Sections 1-3 of OBOS Home+.
+
+Four sections, in this order:
+## Your Words
+Open with a short, resonant fragment from the resident's answer to s1q1, drawn verbatim or near-verbatim.
+## What Matters Most
+Drawn from s3q1. This is the headline.
+## Your Opportunities
+Surface ONLY the domains the resident actually raised. Use their framing. Do not invent concerns they did not raise.
+## Your Choice
+A single one-line affirmation of the resident's agency over what happens next.
+
+HARDLINE RULES:
+- Observational language only ("you mentioned...", "you described...").
+- No clinical or diagnostic language.
+- No instrument names (WHO-5, ASCOT, SCD-Initiative, UCLA, FINGER, ICECAP-O).
+- No services recommended.
+- No phone numbers or URLs.
+- Do not refer to anything from Section 4 — you do not have access to Section 4.
+- Address the resident in second person ("you"). Use the name only sparingly.
+- Use markdown ## headings for each section.\`;
+    const userMessage = \`Resident's name (if given): \${session.name || 'not given'}\n\nThe conversation (Sections 1-3 only — Iron Curtain enforced):\n\n\${wellnessAnswers}\n\nGenerate the Your Wellness Report now.\`;
+    const report = await callClaude(systemPrompt, userMessage, 1500);
+    session.wellnessReport = report;
+    await detectAsset();
+    computeEngagement();
+    renderWellnessReport();
+  } catch (e) {
+    setScreen(\`<h2>Hiccup</h2><div class="quote">\${escapeHtml(e.message)}</div><button class="primary" onclick="generateWellnessReport()">Try again</button>\`);
+  }
+}
+
+async function detectAsset() {
+  const candidates = ['s1q3', 's1q5', 's3q2']
+    .map(k => session.wellnessArc.answers[k])
+    .filter(Boolean).map(v => v.text).join('\n---\n');
+  if (!candidates) return;
+  const systemPrompt = \`Evaluate whether a resident has surfaced a Community Talent — a long-held skill, craft, career, or capability they could share with their building's community. Conservative threshold.
+
+Return ONLY a JSON object: {"captured": true|false, "talent": "..." | null}
+
+Capture ONLY when:
+(a) The resident dwelled on the topic, OR
+(b) Used language of capability/willingness ("I could still", "I'd happily", "I miss having a use for")
+
+Do NOT capture passing mentions or topics described with weariness. The "talent" string, if captured, is a short phrase in the resident's voice.\`;
+  try {
+    const resp = await callClaude(systemPrompt, candidates, 200);
+    const jsonMatch = resp.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const obj = JSON.parse(jsonMatch[0]);
+      if (obj.captured) {
+        session.wellnessArc.assetCaptured = true;
+        session.wellnessArc.assetTalent = obj.talent;
+      }
+    }
+  } catch (e) { console.warn('Asset detection error:', e); }
+}
+
+function computeEngagement() {
+  const answered = Object.keys(session.wellnessArc.answers).length;
+  const skips = session.wellnessArc.skipCount;
+  if (answered < 3) session.engagementLevel = 0;
+  else if (skips >= 2) session.engagementLevel = 1;
+  else session.engagementLevel = 2;
+}
+
+function renderWellnessReport() {
+  setScreen(`
+    <div class="progress">Your Wellness Report</div>
+    <div class="report">${renderMarkdownLite(session.wellnessReport)}</div>
+    <p class="soft" style="margin-top:32px;">This report is yours. You can print it now, or continue. Continuing will take you to a few questions about your home, and then a separate Home Report.</p>
+    <div class="button-row">
+      <button class="primary" onclick="afterWellnessReport()">Continue</button>
+      <button onclick="window.print()">Print this report</button>
+      <button onclick="renderEarlyExitFromWellness()">End here with this report</button>
+    </div>
+  `);
+}
+
+function renderEarlyExitFromWellness() {
+  setScreen(`
+    <h2>Of course.</h2>
+    <p>This is a complete and successful interaction. Your Wellness Report is yours to keep, or to share with your GP if you'd like to.</p>
+    <div class="button-row">
+      <button class="primary" onclick="renderConsentedClick()">Decide what to do with this report</button>
+      <button onclick="window.print()">Print and end</button>
+      <button onclick="renderThankYou()">Just end here</button>
+    </div>
+  `);
+}
+
+function afterWellnessReport() {
+  if (session.wellnessArc.assetCaptured && session.engagementLevel >= 1) renderAssetOffer();
+  else renderCanCannot();
+}
+
+function renderAssetOffer() {
+  const talent = session.wellnessArc.assetTalent;
+  setScreen(`
+    <h2>Something you mentioned</h2>
+    <p>Earlier, you said something about <em>${escapeHtml(talent)}</em>.</p>
+    <p>Buildings sometimes have small ways of using the experience the people in them carry — a gardening group looking for help, a reading hour someone might join, a repair café, a quiet conversation with a neighbour.</p>
+    <p class="soft">Would you welcome being told if your building was looking for someone with the kind of experience you described? You don't commit to anything by saying yes — only to being asked.</p>
+    <div class="button-row stack">
+      <button onclick="acceptAsset('yes')">Yes, I would welcome that</button>
+      <button onclick="acceptAsset('maybe')">Maybe, ask me another time</button>
+      <button onclick="acceptAsset('no')">No, this is just for me</button>
+    </div>
+  `);
+}
+function acceptAsset(consent) {
+  session.wellnessArc.assetConsent = consent;
+  renderCanCannot();
+}
+
+/* STATE 6 — CAN/CANNOT */
+function renderCanCannot() {
+  setScreen(`
+    <h2>Before the next questions, a plain word.</h2>
+    <p>You've shared what matters to you, and we've put together a Wellness Report. The next questions are about your home — your apartment, the building, the area around it.</p>
+    <p>This will produce a separate <strong>Your Home Report</strong>.</p>
+    <p>Two things you should know:</p>
+    <div class="quote">The two reports are kept entirely separate. Nothing from your Wellness Report is ever sent with your Home Report. Nothing from your Home Report is ever added to your Wellness Report.</div>
+    <p>OBOS Home+ <strong>can</strong> listen, reflect, and produce the two reports for you to keep. With your explicit press of a button, it can route the Wellness Report to your GP, or the Home Report to your OBOS Housing Officer — to two different people, never the same.</p>
+    <p>OBOS Home+ <strong>cannot</strong> replace human care. It cannot decide things for you. It cannot share anything you haven't pressed a button to share. The Housing Officer will never see anything from your Wellness Report.</p>
+    <p class="soft">When you're ready.</p>
+    <div class="button-row">
+      <button class="primary" onclick="enterSection('s4')">Continue</button>
+      <button onclick="renderEarlyExitFromWellness()">End the conversation here</button>
+    </div>
+  `);
+}
+
+/* STATE 8 — CANDIDATE-LINK DETECTION (single Iron Curtain crossing) */
+async function runCandidateLinkDetection() {
+  renderProcessing();
+  if (session.safetyFlags.anyFiredThisSession) {
+    await generateHomeReport();
+    return;
+  }
+  const wellnessContext = Object.entries(session.wellnessArc.answers).map(([k, v]) => {
+    const q = findQuestionByKey(k);
+    return \`\${q?.text}\n→ \${v.text}\`;
+  }).join('\n\n');
+  const homeContext = Object.entries(session.homeArc.answers).map(([k, v]) => {
+    const q = findQuestionByKey(k);
+    return \`\${q?.text}\n→ \${v.text}\`;
+  }).join('\n\n');
+  if (!wellnessContext || !homeContext) { await generateHomeReport(); return; }
+
+  const systemPrompt = \`You are the Candidate-Link Detection layer for OBOS Home+. This is the ONLY moment in the architecture where you have access to BOTH wellbeing material (Sections 1-3) and home material (Section 4) in the same context.
+
+Detect whether there is a plausible connection between (a) a concrete home/environs issue from Section 4 and (b) wellbeing material from Sections 1-3.
+
+CONSERVATIVE THRESHOLD. False positives are worse than false negatives. A passing mention of "things have been a bit harder" with a Section 4 mention of a lift issue is NOT enough. The wellbeing material must have specificity (a concrete activity, change, or feeling) that plausibly connects to the home issue.
+
+Return EXACTLY a JSON object, nothing else:
+{
+  "linkCandidate": true | false,
+  "homeIssue": "..." | null,
+  "paraphrasedWellbeingFragment": "..." | null
+}
+
+The paraphrasedWellbeingFragment is a short, NEUTRAL paraphrase — like "you've been finding things take more effort lately" or "you're not getting out as much as you used to". NEVER clinical. NEVER name a domain.\`;
+
+  const userMessage = \`Sections 1-3 (wellbeing):\n\n\${wellnessContext}\n\n---\n\nSection 4 (home):\n\n\${homeContext}\n\nDetect:\`;
+  try {
+    const resp = await callClaude(systemPrompt, userMessage, 400);
+    const jsonMatch = resp.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) { await generateHomeReport(); return; }
+    const obj = JSON.parse(jsonMatch[0]);
+    if (obj.linkCandidate) {
+      session.linkage.candidateDetected = true;
+      session.linkage.homeIssueQuoted = obj.homeIssue;
+      session.linkage.paraphrasedFragment = obj.paraphrasedWellbeingFragment;
+      renderSupplementaryQuestion();
+    } else {
+      await generateHomeReport();
+    }
+  } catch (e) {
+    console.warn('Candidate-link detection error:', e);
+    await generateHomeReport();
+  }
+}
+
+/* STATE 9 — SUPPLEMENTARY QUESTION */
+function renderSupplementaryQuestion() {
+  const homeIssue = session.linkage.homeIssueQuoted;
+  const fragment = session.linkage.paraphrasedFragment;
+  setScreen(`
+    <h2>Something to think about.</h2>
+    <p>Earlier, you mentioned <em>${escapeHtml(homeIssue)}</em>.</p>
+    <p>You also mentioned that ${escapeHtml(fragment)}.</p>
+    <p>Sometimes these things are connected, and sometimes they are not. Only you can really say.</p>
+    <p style="font-size:20px;font-style:italic;margin:32px 0;">Would you say the ${escapeHtml(homeIssue)} is affecting how you feel or how you manage day to day?</p>
+    <div class="button-row stack">
+      <button onclick="answerSupp('yes')">Yes, they're connected</button>
+      <button onclick="answerSupp('no')">No, they're separate</button>
+      <button onclick="answerSupp('rather_not')">I'd rather not say</button>
+    </div>
+  `);
+}
+async function answerSupp(answer) {
+  if (answer === 'yes') {
+    session.linkage.residentConfirmed = true;
+    renderProcessing();
+    await generateLinkageStatement();
+    await generateHomeReport();
+  } else {
+    session.linkage.candidateDetected = false;
+    session.linkage.homeIssueQuoted = null;
+    session.linkage.paraphrasedFragment = null;
+    session.linkage.residentConfirmed = false;
+    await generateHomeReport();
+  }
+}
+
+// Fixed linkage generation to use JS string-building for unbreakable compliance
+async function generateLinkageStatement() {
+  const homeIssue = session.linkage.homeIssueQuoted || "an issue with your home";
+  const addr = session.name || 'The resident';
+  session.linkage.fixedStatement = `${addr} has reported "${homeIssue}" and has indicated this is affecting their day-to-day life.`;
+}
+
+/* STATE 10 — HOME REPORT */
+async function generateHomeReport() {
+  renderProcessing();
+  try {
+    const homeAnswers = Object.entries(session.homeArc.answers).map(([key, v]) => {
+      const q = findQuestionByKey(key);
+      return \`[\${key}] Q: \${q?.text}\nA: \${v.text}\`;
+    }).join('\n\n');
+    if (!homeAnswers) {
+      // No home answers given — skip directly to consented click for wellness only
+      renderConsentedClick();
+      return;
+    }
+    const systemPrompt = \`Generate a "Your Home Report" for a resident who has just completed Section 4 of OBOS Home+. Drawn ONLY from Section 4 (Iron Curtain). No Sections 1-3 access. No wellbeing content.
+
+Three sections, in this order:
+## Your Home
+Observational paragraph about apartment, building, access (from s4q1, s4q2, s4q4).
+## Your Neighbourhood
+From s4q3 — neighbours and the wider community.
+## Your Concerns
+Itemised list of specific friction(s) raised. Use the resident's own words.
+
+Vinter-Trygg active: \${session.vinterTryggActive ? 'YES' : 'NO'}
+\${session.vinterTryggActive ? 'If seasonal content is present, flag with: "Some of these concerns were raised during a Winter Check-in session."' : ''}
+
+HARDLINE RULES:
+- Observational language only.
+- No clinical, psychological, or wellbeing language.
+- No reference to mood, memory, loneliness — you do not have access to that material.
+- No service recommendations.
+- Use markdown ## headings.
+- Address the resident as "you".\`;
+    const userMessage = \`Resident: \${session.name || 'not given'}\n\nSection 4 (Iron Curtain — no wellbeing material):\n\n\${homeAnswers}\n\nGenerate the Your Home Report now.\`;
+    const report = await callClaude(systemPrompt, userMessage, 1200);
+    session.homeReport = report;
+    renderHomeReport();
+  } catch (e) {
+    setScreen(\`<h2>Hiccup</h2><div class="quote">\${escapeHtml(e.message)}</div><button class="primary" onclick="generateHomeReport()">Try again</button>\`);
+  }
+}
+
+function renderHomeReport() {
+  setScreen(`
+    <div class="progress">Your Home Report</div>
+    <div class="report">${renderMarkdownLite(session.homeReport)}</div>
+    <p class="soft" style="margin-top:32px;">This report is yours. It is separate from your Wellness Report and contains no wellbeing material.</p>
+    <div class="button-row">
+      <button class="primary" onclick="afterHomeReport()">Continue</button>
+      <button onclick="window.print()">Print this report</button>
+    </div>
+  `);
+}
+
+function afterHomeReport() {
+  if (session.linkage.residentConfirmed && session.linkage.fixedStatement) renderLinkageConsent();
+  else renderConsentedClick();
+}
+
+/* STATE 11 — LINKAGE CONSENT */
+function renderLinkageConsent() {
+  setScreen(`
+    <h2>About the connection you mentioned.</h2>
+    <p>Earlier you said the home issue was affecting you. If you'd like, the Home Report can include this single sentence — and only this sentence — when you send it to your Housing Officer.</p>
+    <div class="linkage-statement">${escapeHtml(session.linkage.fixedStatement)}</div>
+    <div class="linkage-rule">
+      <strong>This sentence is the only piece of information from your wellbeing that may be sent to the OBOS Housing Officer. Nothing else from your Wellness Report will be sent. The Housing Officer is not a clinician.</strong>
+    </div>
+    <p class="soft">You can approve this sentence to be added, send the Home Report without it, or cancel sending the Home Report entirely.</p>
+    <div class="button-row stack">
+      <button class="primary" onclick="approveLinkage()">Approve and continue</button>
+      <button onclick="declineLinkage()">Send Home Report without this sentence</button>
+      <button onclick="cancelHomeReport()">Don't send the Home Report at all</button>
+    </div>
+  `);
+}
+function approveLinkage() { session._linkageApproved = true; renderConsentedClick(); }
+function declineLinkage() { session._linkageApproved = false; session.linkage.fixedStatement = null; renderConsentedClick(); }
+function cancelHomeReport() { session._suppressHomeReport = true; session._linkageApproved = false; session.linkage.fixedStatement = null; renderConsentedClick(); }
+
+/* STATE 12 — CONSENTED CLICK */
+function renderConsentedClick() {
+  const hasWellness = !!session.wellnessReport;
+  const hasHome = !!session.homeReport && !session._suppressHomeReport;
+  const hasAsset = session.wellnessArc.assetCaptured && session.wellnessArc.assetConsent === 'yes';
+  const pulseAvailable = !session.safetyFlags.anyFiredThisSession;
+  let buttons = '';
+  if (hasWellness) buttons += '<button onclick="routeGP()">Share Wellness Report with my GP / Kommune</button>';
+  if (hasHome) {
+    const linkageNote = session._linkageApproved ? ' <em style="font-size:13px;color:var(--ink-faint);">(with the linkage sentence you approved)</em>' : '';
+    buttons += `<button onclick="routeHousing()">Share Home Report with OBOS Housing Officer${linkageNote}</button>`;
+  }
+  if (hasAsset) buttons += '<button onclick="routeCommunity(true)">Share with a Community Captain (your interests &amp; experience)</button>';
+  if (pulseAvailable) buttons += '<button onclick="renderPulseSetup()">Send a Sovereign Pulse to a family member</button>';
+  buttons += '<button class="ghost" onclick="goToSaveOrLeave()">None of these — just my reports to print</button>';
+  setScreen(`
+    <h2>What you'd like to do next.</h2>
+    <p>Each of these is optional. Your reports are yours either way.</p>
+    <p class="soft">None are pre-selected. You can choose one, several, or none.</p>
+    <div class="button-row stack">${buttons}</div>
+  `);
+}
+
+async function routeGP() {
+  renderProcessing();
+  const wellnessAnswers = Object.entries(session.wellnessArc.answers).map(([k, v]) => {
+    const q = findQuestionByKey(k);
+    return \`[\${k}] Q: \${q?.text}\nA: \${v.text}\`;
+  }).join('\n\n');
+  const systemPrompt = \`Generate "A Summary for the Resident's Fastlege" — formal-but-not-clinical observational summary. Drawn ONLY from Sections 1-3 (Iron Curtain).
+
+RULES:
+- Observational language only.
+- No instrument names.
+- No diagnostic categories or scores.
+- No service recommendations.
+- Thematic section headings only.
+
+Conclude with this exact disclaimer (do not modify):
+"This is an account of what the resident shared in a conversation called OBOS Home+. It is prepared at the resident's request to help them talk with their fastlege or kommune. It is not a clinical assessment and does not replace professional judgement. The resident retains full authority over any decisions about their care."\`;
+  try {
+    const summary = await callClaude(systemPrompt, \`Resident name: \${session.name || 'not given'}\n\n\${wellnessAnswers}\`, 1500);
+    setScreen(\`
+      <h2>Your GP Summary</h2>
+      <p class="soft">Print this and bring it to your appointment.</p>
+      <div class="report">\${renderMarkdownLite(summary)}</div>
+      <div class="button-row">
+        <button onclick="window.print()">Print</button>
+        <button class="primary" onclick="renderConsentedClick()">Back to choices</button>
+      </div>
+    \`);
+  } catch (e) { setScreen(\`<p>\${escapeHtml(e.message)}</p><button onclick="renderConsentedClick()">Back</button>\`); }
+}
+
+async function routeHousing() {
+  renderProcessing();
+  const homeAnswers = Object.entries(session.homeArc.answers).map(([k, v]) => {
+    const q = findQuestionByKey(k);
+    return \`[\${k}] Q: \${q?.text}\nA: \${v.text}\`;
+  }).join('\n\n');
+  const linkageBlock = (session._linkageApproved && session.linkage.fixedStatement)
+    ? \`\n\n[LINKAGE STATEMENT — APPROVED BY RESIDENT]\n\${session.linkage.fixedStatement}\` : '';
+  const systemPrompt = \`Generate the "Home Note" — the routed artifact for an OBOS Housing Officer. Drawn ONLY from Section 4 (Iron Curtain). No wellbeing content.
+
+EXCEPT: if a [LINKAGE STATEMENT — APPROVED BY RESIDENT] block is supplied at the end of the input, include it verbatim in a clearly bounded section near the end. Do not paraphrase, expand, or add to it.
+
+Vinter-Trygg active: \${session.vinterTryggActive ? 'YES' : 'NO'}
+\${session.vinterTryggActive ? 'If applicable, include "Generated during a Winter Check-in session" near the top.' : ''}
+
+The Home Note has:
+- Brief observational paragraph in the resident's framing
+- Itemised list of friction(s) raised
+- (If supplied) The verbatim linkage statement
+- This standing disclaimer:
+
+"This note has been prepared at the resident's request, from a conversation they had on OBOS Home+. It records what the resident chose to share about their home and surroundings only. OBOS Home+ also produces a separate Wellness Report which is not, and never will be, sent to the Housing Officer. The Housing Officer receives this Home Note alone. The resident retains full authority over how this matter is taken forward."
+
+RULES: no clinical language, no reference to wellbeing/mood/memory/loneliness, no service recommendations.\`;
+  try {
+    const note = await callClaude(systemPrompt, \`Resident: \${session.name || 'not given'}\n\nSection 4 (Iron Curtain — no wellbeing access):\n\n\${homeAnswers}\${linkageBlock}\`, 1200);
+    setScreen(\`
+      <h2>Your Home Note</h2>
+      <p class="soft">Print this and give to your OBOS Housing Officer, or share by your preferred means.</p>
+      <div class="report">\${renderMarkdownLite(note)}</div>
+      <div class="button-row">
+        <button onclick="window.print()">Print</button>
+        <button class="primary" onclick="renderConsentedClick()">Back to choices</button>
+      </div>
+    \`);
+  } catch (e) { setScreen(\`<p>\${escapeHtml(e.message)}</p><button onclick="renderConsentedClick()">Back</button>\`); }
+}
+
+async function routeCommunity(assetBased) {
+  renderProcessing();
+  const wellnessAnswers = Object.entries(session.wellnessArc.answers).map(([k, v]) => {
+    const q = findQuestionByKey(k);
+    return \`[\${k}] Q: \${q?.text}\nA: \${v.text}\`;
+  }).join('\n\n');
+  const systemPrompt = assetBased && session.wellnessArc.assetTalent
+    ? \`Generate an "Asset-Based Connection Note". Frame: contribution, not need. Drawn ONLY from Sections 1-3 (Iron Curtain). The resident captured: "\${session.wellnessArc.assetTalent}".
+
+Output a short paragraph (3-5 sentences) in this frame:
+
+"This note has been prepared at the resident's request, from a conversation they had on OBOS Home+. The resident has indicated they would welcome being asked if the building's community life has a place for someone who [resident's own words]. They have not committed to anything. They have asked to be invited. The recipient is asked to extend a specific, low-commitment invitation if and when an appropriate occasion arises, and to honour a decline as the conversation working as designed."
+
+The note never contains clinical material, loneliness signal, or safeguarding content. Do not patronise.\`
+    : \`Generate a "Connection Note" (loneliness frame). Drawn ONLY from Sections 1-3.
+
+Use this exact disclaimer at the end:
+
+"This note has been prepared at the resident's request, from a conversation they had on OBOS Home+. It records what the resident chose to share about their connections and interests. It is not a referral. The resident would welcome being told about local activity that fits what they described. They have not asked for a visit or a follow-up call unless invited. This note draws only from the resident's Wellness Report material. The OBOS Housing Officer is not, and will not be, sent this note or any of its content."
+
+RULES: do not pathologise loneliness, do not label the resident as isolated.\`;
+  try {
+    const note = await callClaude(systemPrompt, \`Resident: \${session.name || 'not given'}\n\n\${wellnessAnswers}\`, 800);
+    setScreen(\`
+      <h2>\${assetBased ? 'Your Asset-Based Connection Note' : 'Your Connection Note'}</h2>
+      <div class="report">\${renderMarkdownLite(note)}</div>
+      <div class="button-row">
+        <button onclick="window.print()">Print</button>
+        <button class="primary" onclick="renderConsentedClick()">Back to choices</button>
+      </div>
+    \`);
+  } catch (e) { setScreen(\`<p>\${escapeHtml(e.message)}</p><button onclick="renderConsentedClick()">Back</button>\`); }
+}
+
+function renderPulseSetup() {
+  setScreen(`
+    <h2>Sovereign Pulse</h2>
+    <p>This sends a single, fixed message to one family member or contact you choose. It contains no information about the conversation — only that you are doing well today.</p>
+    <p class="soft">In the deployed version, this would send by email or SMS. In this V1 prototype, it will display on screen as a confirmation — the message you would send.</p>
+    <h3>Who would you like to let know?</h3>
+    <input type="text" id="pulseName" placeholder="Their first name (e.g. Anna)">
+    <input type="text" id="pulseContact" placeholder="Their email or phone number">
+    <div class="button-row">
+      <button class="primary" onclick="sendPulse()">Send</button>
+      <button onclick="renderConsentedClick()">Back</button>
+    </div>
+  `);
+}
+function sendPulse() {
+  const pname = document.getElementById('pulseName').value.trim();
+  const pcontact = document.getElementById('pulseContact').value.trim();
+  if (!pname || !pcontact) { alert('Please give a name and a contact method.'); return; }
+  const fromName = session.name || 'Your contact';
+  const today = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  const message = `This is OBOS Home+. ${fromName} has asked us to let you know that they are doing well today. This message contains nothing else. They will write or call as they wish. — Sent at resident's request, ${today}.`;
+  setScreen(`
+    <h2>Pulse — ready to send</h2>
+    <p class="soft">In the deployed version, this would now be sent to ${escapeHtml(pname)} at ${escapeHtml(pcontact)}.</p>
+    <div class="quote">${escapeHtml(message)}</div>
+    <p class="soft" style="font-size:13px;">[V1 prototype: simulated send — no actual email or SMS dispatched]</p>
+    <div class="button-row">
+      <button class="primary" onclick="renderConsentedClick()">Back to choices</button>
+    </div>
+  `);
+}
+
+function goToSaveOrLeave() {
+  setScreen(`
+    <h2>One last moment to save.</h2>
+    <p>Your reports will disappear when you close this page. There is no record of them anywhere.</p>
+    <div class="button-row stack">
+      ${session.wellnessReport ? '<button onclick="window.print()">Print Wellness Report</button>' : ''}
+      ${session.homeReport ? '<button onclick="window.print()">Print Home Report</button>' : ''}
+      <button class="primary" onclick="renderThankYou()">I'm ready to end</button>
+    </div>
+  `);
+}
+
+function renderThankYou() {
+  setScreen(`
+    <h1>Thank you.</h1>
+    <p>This conversation is done. Anything you didn't print is now gone.</p>
+    <p class="soft">You are welcome to come back to OBOS Home+ any time. Each conversation starts fresh.</p>
+    ${session.wellnessReport || session.homeReport ?
+      '<div class="button-row"><button onclick="window.print()">One last chance to print</button></div>' : ''}
+    <p class="soft" style="margin-top:48px;font-size:13px;">Session: ${session.callCount} API calls · ~$${session.estCost.toFixed(2)}</p>
+  `);
+}
+
+/* VOICE INPUT */
+let recognition = null;
+let voiceTimer = null;
+let stillListeningTimer = null;
+let isRecording = false;
+function toggleVoice() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    alert('Voice input requires Chrome or another Chromium-based browser. Please type your answer.');
+    return;
+  }
+  if (isRecording) { stopVoice(); return; }
+  startVoice();
+}
+function startVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'en-GB';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  isRecording = true;
+  const btn = document.getElementById('voiceBtn');
+  const status = document.getElementById('voiceStatus');
+  if (btn) { btn.classList.add('recording'); btn.textContent = '⏹ Stop'; }
+  if (status) status.textContent = 'listening...';
+  let finalText = '';
+  recognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalText += t + ' '; else interim += t;
+    }
+    const ta = document.getElementById('answer') || document.getElementById('sayMore');
+    if (ta) ta.value = (finalText + interim).trim();
+    resetSilenceTimers();
+  };
+  recognition.onerror = (e) => { console.warn('Speech error:', e); stopVoice(); };
+  recognition.onend = () => { isRecording = false; };
+  recognition.start();
+  resetSilenceTimers();
+}
+function resetSilenceTimers() {
+  clearTimeout(stillListeningTimer); clearTimeout(voiceTimer);
+  stillListeningTimer = setTimeout(() => {
+    const status = document.getElementById('voiceStatus');
+    if (status) status.textContent = 'still listening...';
+  }, STILL_LISTENING_MS);
+  voiceTimer = setTimeout(() => stopVoice(), VOICE_SILENCE_MS);
+}
+function stopVoice() {
+  clearTimeout(voiceTimer); clearTimeout(stillListeningTimer);
+  try { recognition?.stop(); } catch(_){}
+  isRecording = false;
+  const btn = document.getElementById('voiceBtn');
+  const status = document.getElementById('voiceStatus');
+  if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤 Speak your answer'; }
+  if (status) status.textContent = '';
+}
+
+function renderMarkdownLite(md) {
+  if (!md) return '';
+  let html = escapeHtml(md);
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/(?<!\*)\*([^\*]+?)\*(?!\*)/g, '<em>$1</em>');
+  html = html.replace(/(?:^|\n)((?:- .+(?:\n- .+)*))/g, (m, list) => {
+    const items = list.trim().split('\n').map(l => l.replace(/^- /, '').trim());
+    return '\n<ul class="report-list">' + items.map(i => '<li>'+i+'</li>').join('') + '</ul>';
+  });
+  html = html.split(/\n\n+/).map(p => {
+    if (p.trim().startsWith('<')) return p;
+    return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+  return html;
+}
+
+window.addEventListener('beforeunload', () => {
+  session.anthropicApiKey = null;
+  session = null;
+});
+
+renderLanding();
+updateMeter();
+</script>
+</body>
+</html>
