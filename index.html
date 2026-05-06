@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBOS Home+</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  /* ── Tokens ──────────────────────────────────────────────── */
+  :root {
+    --cream:       #F4F0EA;
+    --cream-card:  #FDFAF6;
+    --ink:         #28221E;
+    --ink-mid:     #5C524A;
+    --ink-muted:   #9C8E84;
+    --copper:      #B07040;
+    --teal:        #35636E;
+    --teal-light:  #EBF3F5;
+    --border:      #E0D8CE;
+    --border-soft: #EDE8E1;
+    --danger:      #9B3A30;
+    --danger-bg:   #FBF0EE;
+    --safe-bg:     #EEF5F0;
+    --safe:        #2D6A4F;
+    --font-display:'Playfair Display', Georgia, serif;
+    --font-body:   'DM Sans', system-ui, sans-serif;
+    --radius:      6px;
+    --shadow:      0 2px 12px rgba(40,34,30,0.08);
+    --shadow-sm:   0 1px 4px rgba(40,34,30,0.06);
+  }
+
+  /* ── Reset & base ────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body {
+    min-height: 100%;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  .shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px 48px;
+  }
+  .card {
+    background: var(--cream-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 620px;
+    padding: 44px 48px;
+    animation: fadeUp 0.4s ease both;
+  }
+  @media (max-width: 640px) { .card { padding: 32px 24px; } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── Brand header ────────────────────────────────────────── */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .brand-mark {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-mark svg { width: 16px; height: 16px; }
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-mid);
+  }
+  .brand-name span { color: var(--teal); }
+
+  /* ── Progress bar ────────────────────────────────────────── */
+  .progress-bar {
+    margin-bottom: 32px;
+  }
+  .progress-section {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .progress-count {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 5px;
+  }
+
+  /* ── Typography ──────────────────────────────────────────── */
+  .display {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1.35;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+  .display.sm { font-size: 22px; }
+  .display.lg { font-size: 34px; }
+  .subtext {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 28px;
+    line-height: 1.65;
+  }
+  .body-text {
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .note {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 28px;
+  }
+  .reflection-text {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--ink-mid);
+    border-left: 3px solid var(--teal);
+    padding-left: 20px;
+    margin: 16px 0 28px;
+    animation: fadeIn 0.6s ease;
+  }
+  .reflection-text.home { border-color: var(--copper); }
+
+  /* ── Inputs ──────────────────────────────────────────────── */
+  textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--ink);
+    background: white;
+    resize: none;
+    min-height: 110px;
+    line-height: 1.65;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+  }
+  textarea.home:focus { border-color: var(--copper); }
+
+  input[type="text"] {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--ink);
+    background: white;
+    transition: border-color 0.2s;
+    margin-bottom: 8px;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--teal);
+  }
+  input[type="password"] {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    background: white;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+  input[type="password"]:focus {
+    outline: none;
+    border-color: var(--teal);
+  }
+
+  /* ── Scale options ───────────────────────────────────────── */
+  .scale-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .scale-btn {
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink-mid);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .scale-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+  .scale-btn.selected {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    color: var(--teal);
+    font-weight: 500;
+  }
+  .scale-btn.selected.home-accent {
+    border-color: var(--copper);
+    background: #FBF5EE;
+    color: var(--copper);
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+  }
+  .btn-primary:hover { background: #2A5260; }
+  .btn-primary.home { background: var(--copper); border-color: var(--copper); }
+  .btn-primary.home:hover { background: #965F30; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink-muted);
+    border-color: var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--ink-muted); color: var(--ink-mid); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-muted);
+    border: none;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .btn-ghost:hover { color: var(--ink); }
+  .btn-danger { background: var(--danger); color: white; border-color: var(--danger); }
+  .btn-safe  { background: var(--safe); color: white; border-color: var(--safe); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  /* ── Voice button ────────────────────────────────────────── */
+  .voice-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .voice-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+  .voice-btn.listening {
+    border-color: var(--copper);
+    background: #FBF5EE;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .voice-btn svg { width: 16px; height: 16px; color: var(--ink-muted); }
+  .voice-btn.listening svg { color: var(--copper); }
+
+  /* ── Input row (textarea + voice) ────────────────────────── */
+  .input-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .input-row textarea { margin-bottom: 0; }
+
+  /* ── Routing cards ───────────────────────────────────────── */
+  .route-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: white;
+  }
+  .route-card:hover { border-color: var(--teal); }
+  .route-card.selected { border-color: var(--teal); background: var(--teal-light); }
+  .route-card-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .route-card-body { flex: 1; }
+  .route-card-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+  .route-card-desc { font-size: 13px; color: var(--ink-muted); }
+
+  /* ── Report display ──────────────────────────────────────── */
+  .report-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .report-tab {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: var(--ink-muted);
+    transition: all 0.15s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .report-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .report-tab.active.home-tab { color: var(--copper); border-bottom-color: var(--copper); }
+  .report-section {
+    margin-bottom: 24px;
+  }
+  .report-section h4 {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+  .report-section p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink-mid);
+  }
+  .report-quote {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+    padding: 16px 20px;
+    border-left: 3px solid var(--teal);
+    background: var(--teal-light);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 8px;
+  }
+  .report-quote.home { border-color: var(--copper); background: #FBF5EE; }
+
+  /* ── Concern list ────────────────────────────────────────── */
+  .concern-list {
+    list-style: none;
+    padding: 0;
+  }
+  .concern-list li {
+    font-size: 14px;
+    color: var(--ink-mid);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .concern-list li::before {
+    content: '—';
+    color: var(--copper);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── WILL/WILL NOT ───────────────────────────────────────── */
+  .will-block {
+    margin-bottom: 20px;
+  }
+  .will-block h3 {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .will-block h3.will  { color: var(--teal); }
+  .will-block h3.wont  { color: var(--ink-muted); }
+  .will-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+  .will-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .will-dot.teal { background: var(--teal); }
+  .will-dot.muted { background: var(--ink-muted); }
+
+  /* ── Safety screens ──────────────────────────────────────── */
+  .safety-box {
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .safety-box.crisis { background: var(--danger-bg); border: 1px solid #DDADA8; }
+  .safety-box.safe   { background: var(--safe-bg); border: 1px solid #A8CCBA; }
+  .safety-box h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .safety-box.crisis h3 { color: var(--danger); }
+  .safety-box.safe   h3 { color: var(--safe); }
+  .hotline {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 4px 0;
+    color: var(--ink);
+  }
+  .hotline-url { font-size: 13px; color: var(--ink-muted); }
+
+  /* ── Generating spinner ──────────────────────────────────── */
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Skip note ───────────────────────────────────────────── */
+  .skip-note {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-style: italic;
+    padding: 10px 14px;
+    background: var(--cream);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+
+  /* ── Divider ─────────────────────────────────────────────── */
+  .divider {
+    height: 1px;
+    background: var(--border-soft);
+    margin: 24px 0;
+  }
+
+  /* ── Checkbox row ────────────────────────────────────────── */
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink-mid);
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  .check-label input { cursor: pointer; accent-color: var(--teal); width: 16px; height: 16px; }
+
+  /* ── Generating message ──────────────────────────────────── */
+  .gen-msg {
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-muted);
+    font-style: italic;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ── Name choice buttons ─────────────────────────────────── */
+  .name-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .name-choice-btn {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink-mid);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .name-choice-btn:hover, .name-choice-btn.active {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    color: var(--teal);
+  }
+
+  /* ── Print styles ────────────────────────────────────────── */
+  @media print {
+    .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    body { background: white; }
+    .shell { padding: 20px; justify-content: flex-start; }
+    .card { box-shadow: none; border: none; max-width: 100%; padding: 0; }
+  }
+  .print-only { display: none; }
+</style>
+</head>
+<body>
+
+<div x-data="obosApp()" class="shell">
+
+  <!-- ── API Key ──────────────────────────────────────────── -->
+  <div x-show="screen==='apikey'" class="card">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      </div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display lg" style="margin-bottom:12px">Welcome</div>
+    <p class="body-text">This is a private, voice-first conversation to help you reflect on how your home is working for you — now and in the years ahead.</p>
+    <p class="body-text">To begin, enter your Anthropic API key. Your key is used only in your browser and never stored.</p>
+    <div class="divider"></div>
+    <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;color:var(--ink-mid)">API Key</label>
+    <input type="password" x-model="apiKey" placeholder="sk-ant-..." @keydown.enter="setApiKey()">
+    <p class="note">Your key stays in your browser tab and is never sent anywhere except directly to Anthropic.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" @click="setApiKey()" :disabled="!apiKey.trim()">Begin</button>
+    </div>
+  </div>
+
+  <!-- ── Threshold ────────────────────────────────────────── -->
+  <div x-show="screen==='threshold'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display" style="margin-bottom:8px">How would you like to be addressed?</div>
+    <p class="subtext">You can use your first name, a formal title, or simply continue without one.</p>
+    <div class="name-choice">
+      <button class="name-choice-btn" :class="{active: nameStyle==='first'}" @click="nameStyle='first'">First name</button>
+      <button class="name-choice-btn" :class="{active: nameStyle==='formal'}" @click="nameStyle='formal'">Title and surname</button>
+      <button class="name-choice-btn" :class="{active: nameStyle==='skip'}" @click="nameStyle='skip'; residentName=''; goHandshake()">I'd rather not say — continue</button>
+    </div>
+    <div x-show="nameStyle==='first'">
+      <input type="text" x-model="residentName" placeholder="Your first name" @keydown.enter="goHandshake()">
+    </div>
+    <div x-show="nameStyle==='formal'" style="display:flex;gap:8px;align-items:flex-start;">
+      <select x-model="formalTitle" style="padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:white;font-family:var(--font-body);font-size:14px;color:var(--ink-mid);cursor:pointer;flex-shrink:0">
+        <option>Mr</option><option>Mrs</option><option>Ms</option><option>Mx</option><option>Dr</option>
+      </select>
+      <input type="text" x-model="formalSurname" placeholder="Surname" @keydown.enter="goHandshake()" style="flex:1;margin-bottom:0">
+    </div>
+    <div class="btn-row" x-show="nameStyle !== 'skip'">
+      <button class="btn btn-primary" @click="goHandshake()">Continue</button>
+      <button class="btn btn-ghost" @click="nameStyle='skip'; residentName=''; goHandshake()">Skip</button>
+    </div>
+  </div>
+
+  <!-- ── Handshake ─────────────────────────────────────────── -->
+  <div x-show="screen==='handshake'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display" x-text="displayName ? `Let's make a start, ${displayName}.` : `Let's make a start.`"></div>
+    <p class="body-text">This conversation is at your own pace and in your own time. There are no right or wrong answers. You can skip any question, or end at any point.</p>
+    <p class="body-text">We'll begin with a few questions about your home.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary home" @click="screen='question'">Begin</button>
+    </div>
+  </div>
+
+  <!-- ── Question ──────────────────────────────────────────── -->
+  <div x-show="screen==='question'" class="card" x-key="qIndex">
+    <div class="brand no-print">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-bar no-print" x-show="currentQ">
+      <div class="progress-section" :style="`color: ${isSection1 ? 'var(--copper)' : 'var(--teal)'}`"
+           x-text="currentQ?.sectionName"></div>
+      <div class="progress-track">
+        <div class="progress-fill"
+             :style="`width:${progressPct}%; background:${isSection1 ? 'var(--copper)' : 'var(--teal)'}`"></div>
+      </div>
+      <div class="progress-count" x-text="`Question ${sectionQNum} of ${sectionQTotal}`"></div>
+    </div>
+
+    <!-- Skip note after 3 skips -->
+    <div class="skip-note" x-show="skipNote">Skipping is completely fine — take your time with the questions that feel relevant to you.</div>
+
+    <!-- Question text -->
+    <div class="display" x-text="currentQ?.text"></div>
+
+    <!-- Memory note for s3q4 -->
+    <p class="note" x-show="currentQ?.key === 's3q4'" x-text="currentQ?.note"></p>
+
+    <!-- Open text input -->
+    <div x-show="currentQ?.type === 'open'">
+      <div class="input-row">
+        <textarea
+          x-model="textInput"
+          :class="isSection1 ? 'home' : ''"
+          placeholder="Type or use the microphone to speak your answer..."
+          rows="4"
+          @keydown.ctrl.enter="submitAnswer()"
+        ></textarea>
+        <button class="voice-btn" :class="{listening: isListening}" @click="toggleVoice()" title="Speak your answer">
+          <svg x-show="!isListening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+          <svg x-show="isListening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+        </button>
+      </div>
+      <p class="note" x-show="isListening" style="animation:pulse 1.5s infinite">Listening — speak naturally, then pause.</p>
+    </div>
+
+    <!-- Scale input -->
+    <div x-show="currentQ?.type === 'scale'">
+      <div class="scale-options">
+        <template x-for="opt in (currentQ?.scaleOptions || [])" :key="opt">
+          <button class="scale-btn"
+            :class="{selected: scaleInput===opt, 'home-accent': isSection1}"
+            @click="scaleInput = opt"
+            x-text="opt">
+          </button>
+        </template>
+      </div>
+      <!-- Say more -->
+      <div x-show="scaleInput" style="margin-top:8px">
+        <p class="note">Say more if you'd like to — or continue with your selection.</p>
+        <div class="input-row">
+          <textarea x-model="sayMoreInput" placeholder="Optional — add a little more if it helps..." rows="3"></textarea>
+          <button class="voice-btn" :class="{listening: isListening}" @click="toggleVoice('saymore')" title="Speak">
+            <svg x-show="!isListening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+            <svg x-show="isListening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Processing indicator -->
+    <p class="note" x-show="isProcessing" style="animation:pulse 1.5s infinite;color:var(--teal)">Reflecting on what you've shared...</p>
+
+    <!-- Buttons -->
+    <div class="btn-row" x-show="!isProcessing">
+      <button class="btn btn-primary" :class="isSection1 ? 'home' : ''"
+        @click="submitAnswer()"
+        :disabled="!canSubmit"
+        x-text="isSection1 ? 'Share' : 'Continue'">
+      </button>
+      <button class="btn btn-ghost" @click="skipQuestion()" x-show="currentQ?.optional">Skip this one</button>
+      <button class="btn btn-ghost" @click="skipQuestion()" x-show="!currentQ?.optional" style="opacity:0.5">Skip</button>
+    </div>
+  </div>
+
+  <!-- ── Reflecting ─────────────────────────────────────────── -->
+  <div x-show="screen==='reflecting'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <p class="section-heading" x-text="lastQ?.sectionName"></p>
+    <div class="reflection-text" :class="lastQ?.section===1 ? 'home' : ''" x-text="reflection"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" :class="lastQ?.section===1 ? 'home' : ''" @click="advanceFromReflection()">Continue</button>
+      <button class="btn btn-ghost" @click="earlyEnd()">End conversation</button>
+    </div>
+  </div>
+
+  <!-- ── WILL / WILL NOT ────────────────────────────────────── -->
+  <div x-show="screen==='willwillnot'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:16px">Before we continue — an honest word about this conversation.</div>
+    <p class="body-text">The next questions are about your daily life and what matters to you. Here is what this tool will and will not do with what you share.</p>
+    <div class="will-block">
+      <h3 class="will">This tool WILL</h3>
+      <div class="will-item"><div class="will-dot teal"></div><span>Listen to everything you share, without judgement</span></div>
+      <div class="will-item"><div class="will-dot teal"></div><span>Produce two personal reports that belong entirely to you: one about your home, one about your wellbeing</span></div>
+      <div class="will-item"><div class="will-dot teal"></div><span>Give you the choice — and only the choice — to share either report with your Housing Officer, your GP, or a family member</span></div>
+      <div class="will-item"><div class="will-dot teal"></div><span>Give you a clean exit at any moment, with nothing stored</span></div>
+    </div>
+    <div class="will-block">
+      <h3 class="wont">This tool WILL NOT</h3>
+      <div class="will-item"><div class="will-dot muted"></div><span>Share anything with anyone unless you press a button that says so, in plain language</span></div>
+      <div class="will-item"><div class="will-dot muted"></div><span>Store your conversation after you close this tab</span></div>
+      <div class="will-item"><div class="will-dot muted"></div><span>Tell OBOS anything about your health, your feelings, or your personal life</span></div>
+      <div class="will-item"><div class="will-dot muted"></div><span>Tell your GP anything about your home or building</span></div>
+      <div class="will-item"><div class="will-dot muted"></div><span>Make any decision about you, for you</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" @click="screen='question'">Continue at my own pace</button>
+      <button class="btn btn-ghost" @click="earlyEnd()">End here</button>
+    </div>
+  </div>
+
+  <!-- ── Crisis ─────────────────────────────────────────────── -->
+  <div x-show="screen==='crisis'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:16px">You don't have to face this alone.</div>
+    <p class="body-text">What you've just shared matters, and there are people ready to listen right now.</p>
+    <div class="safety-box crisis">
+      <h3>Crisis support — Norway</h3>
+      <p class="hotline">Mental Helse &nbsp; 116 123</p>
+      <p class="hotline-url">mentalhelse.no</p>
+      <p class="hotline" style="margin-top:10px">Kirkens SOS &nbsp; 22 40 00 11</p>
+      <p class="hotline" style="margin-top:10px">Medical emergency &nbsp; 113</p>
+    </div>
+    <div class="safety-box crisis" style="margin-bottom:8px">
+      <h3>Crisis support — Sweden</h3>
+      <p class="hotline">Mind Sverige &nbsp; 90 101</p>
+      <p class="hotline" style="margin-top:6px">Medical emergency &nbsp; 112</p>
+    </div>
+    <div class="divider"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" @click="screen='question'">I have reached out, and I would like to continue</button>
+      <button class="btn btn-ghost" @click="earlyEnd()">End the conversation</button>
+    </div>
+  </div>
+
+  <!-- ── Safeguarding ───────────────────────────────────────── -->
+  <div x-show="screen==='safeguarding'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:16px">What you've shared is important.</div>
+    <p class="body-text">There are people whose role it is to help in situations like this. You do not have to manage it alone.</p>
+    <div class="safety-box safe">
+      <h3>Support for older adults — Norway</h3>
+      <p class="hotline">Vern for eldre &nbsp; 800 30 196</p>
+      <p class="hotline-url">vernforeldre.no</p>
+      <p class="hotline" style="margin-top:8px">Emergency &nbsp; 113</p>
+    </div>
+    <div class="divider"></div>
+    <div class="btn-row">
+      <button class="btn btn-safe" @click="screen='question'">I have reached out, and I would like to continue</button>
+      <button class="btn btn-ghost" @click="earlyEnd()">End the conversation</button>
+    </div>
+  </div>
+
+  <!-- ── Sovereignty Pause ──────────────────────────────────── -->
+  <div x-show="screen==='sovereigntypause'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:16px">Take your time.</div>
+    <p class="body-text">This conversation is entirely on your terms. You are welcome to carry on or to end here — both are fine.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" @click="resumeAfterPause()">Carry on</button>
+      <button class="btn btn-secondary" @click="earlyEnd()">End here</button>
+    </div>
+  </div>
+
+  <!-- ── Skip Off-ramp ─────────────────────────────────────── -->
+  <div x-show="screen==='skipofframp'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:16px">No need to continue if it doesn't feel right.</div>
+    <p class="body-text">You've skipped a few questions, which is completely fine. Would you like to carry on, or end the conversation here? If you have answered some questions, we can still produce a partial report for you.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" @click="screen='question'">Carry on</button>
+      <button class="btn btn-secondary" @click="startGenerating()">End and see what I've shared</button>
+    </div>
+  </div>
+
+  <!-- ── Generating ─────────────────────────────────────────── -->
+  <div x-show="screen==='generating'" class="card" style="text-align:center">
+    <div class="brand" style="justify-content:center">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="spinner"></div>
+    <div class="display sm" style="margin-bottom:12px">Preparing your reports</div>
+    <p class="gen-msg" x-text="generatingMsg"></p>
+  </div>
+
+  <!-- ── Inferred Link Question ─────────────────────────────── -->
+  <div x-show="screen==='linkquestion'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <p class="note">One last thing, before your reports.</p>
+    <div class="display sm" x-text="linkSupplementaryQ"></div>
+    <div class="btn-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <button class="btn btn-primary" @click="linkAnswer('yes')">Yes, they're connected</button>
+      <button class="btn btn-secondary" @click="linkAnswer('no')">No, they're separate</button>
+      <button class="btn btn-ghost" @click="linkAnswer('skip')">I'd rather not say</button>
+    </div>
+  </div>
+
+  <!-- ── Link Consent ───────────────────────────────────────── -->
+  <div x-show="screen==='linkconsent'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:12px">One sentence — your choice</div>
+    <p class="body-text">This is the only piece of information about your wellbeing that could be sent to your Housing Officer. Nothing else from your Wellness Report will be sent.</p>
+    <div class="report-quote home" x-text="linkStatement"></div>
+    <p class="note">No other wellbeing information will be shared with OBOS, even if you wished it. The Housing Officer is not a clinician.</p>
+    <div class="btn-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <button class="btn btn-primary home" @click="approveLinkage()">Approve — include this sentence</button>
+      <button class="btn btn-secondary" @click="screen='reports'; linkApproved=false">Send Home Report without this sentence</button>
+      <button class="btn btn-ghost" @click="screen='reports'; linkApproved=false; shareHousing=false">Cancel sending the Home Report</button>
+    </div>
+  </div>
+
+  <!-- ── Reports ───────────────────────────────────────────── -->
+  <div x-show="screen==='reports'" class="card">
+    <div class="brand no-print">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+
+    <div class="display sm no-print" style="margin-bottom:8px">Your reports are ready.</div>
+    <p class="subtext no-print">These reports belong to you. Print them, keep them, or choose to share them — entirely on your terms.</p>
+
+    <!-- Tab toggle -->
+    <div class="report-tabs no-print">
+      <button class="report-tab" :class="{active: activeTab==='wellness', 'active': activeTab==='wellness'}" @click="activeTab='wellness'">Your Wellness Report</button>
+      <button class="report-tab home-tab" :class="{active: activeTab==='home'}" @click="activeTab='home'">Your Home Report</button>
+    </div>
+
+    <!-- Wellness Report -->
+    <div x-show="activeTab==='wellness'">
+      <div x-show="wellnessReport" x-html="wellnessReport"></div>
+      <div x-show="!wellnessReport" class="body-text" style="font-style:italic;color:var(--ink-muted)">The personal sections of your conversation were not completed — your Wellness Report was not generated.</div>
+    </div>
+
+    <!-- Home Report -->
+    <div x-show="activeTab==='home'">
+      <div x-show="homeReport" x-html="homeReport"></div>
+      <div x-show="!homeReport" class="body-text" style="font-style:italic;color:var(--ink-muted)">No home questions were answered — your Home Report was not generated.</div>
+    </div>
+
+    <div class="divider no-print"></div>
+    <div class="btn-row no-print">
+      <button class="btn btn-primary" @click="screen='routing'">Choose what to share</button>
+      <button class="btn btn-secondary" @click="printReport()">Print this report</button>
+      <button class="btn btn-ghost" @click="earlyEnd()">Keep and finish</button>
+    </div>
+  </div>
+
+  <!-- ── Routing ───────────────────────────────────────────── -->
+  <div x-show="screen==='routing'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display sm" style="margin-bottom:8px">Your choice — nothing is shared unless you choose it.</div>
+    <p class="subtext">Select any that feel right. Each is a separate decision. None is a default.</p>
+
+    <!-- GP Share -->
+    <div class="route-card" :class="{selected: shareGP}" @click="shareGP=!shareGP" x-show="wellnessReport">
+      <div class="route-card-icon" style="background:var(--teal-light)">🏥</div>
+      <div class="route-card-body">
+        <div class="route-card-title">Share Wellness Report with GP or kommune</div>
+        <div class="route-card-desc">A plain-language summary of what you shared about your wellbeing — for you to take to a conversation with your GP or local services.</div>
+      </div>
+    </div>
+
+    <!-- Housing Officer Share -->
+    <div class="route-card" :class="{selected: shareHousing}" @click="shareHousing=!shareHousing" x-show="homeReport">
+      <div class="route-card-icon" style="background:#FBF5EE">🏠</div>
+      <div class="route-card-body">
+        <div class="route-card-title">Share Home Report with OBOS Housing Officer</div>
+        <div class="route-card-desc">A factual note about your home and any concerns you raised — for your Housing Officer to follow up on.</div>
+      </div>
+    </div>
+
+    <!-- Community Share -->
+    <div class="route-card" :class="{selected: shareCommunity}" @click="shareCommunity=!shareCommunity" x-show="wellnessReport">
+      <div class="route-card-icon" style="background:#EEF5F0">🤝</div>
+      <div class="route-card-body">
+        <div class="route-card-title">Share with Community Captain or Social Worker</div>
+        <div class="route-card-desc">A note about your connections, interests, or what you'd welcome from the community around your building.</div>
+      </div>
+    </div>
+
+    <!-- None -->
+    <div style="padding:12px 0">
+      <button class="btn btn-ghost" @click="screen='thankyou'" style="font-size:13px">None of these — print and finish</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" @click="confirmRouting()" :disabled="!shareGP && !shareHousing && !shareCommunity">Generate selected summaries</button>
+      <button class="btn btn-ghost" @click="screen='reports'">Back to reports</button>
+    </div>
+  </div>
+
+  <!-- ── Generating notes ───────────────────────────────────── -->
+  <div x-show="screen==='generating_notes'" class="card" style="text-align:center">
+    <div class="brand" style="justify-content:center">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="spinner"></div>
+    <div class="display sm" style="margin-bottom:12px">Preparing your summaries</div>
+    <p class="gen-msg">Almost there...</p>
+  </div>
+
+  <!-- ── Thank you ─────────────────────────────────────────── -->
+  <div x-show="screen==='thankyou'" class="card">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="brand-name">OBOS <span>Home+</span></div>
+    </div>
+    <div class="display" x-text="displayName ? `Thank you, ${displayName}.` : 'Thank you.'"></div>
+    <p class="body-text">Everything you've shared today stays in this tab. When you close it, nothing is retained anywhere.</p>
+    <p class="body-text" x-show="shareGP || shareHousing || shareCommunity">The summaries you chose to share have been prepared below. Print or save them before closing this tab.</p>
+
+    <!-- Generated notes -->
+    <div x-show="gpSummary">
+      <div class="divider"></div>
+      <p class="section-heading">Summary for your GP or kommune</p>
+      <div x-html="gpSummary" style="font-size:14px;line-height:1.75;color:var(--ink-mid)"></div>
+      <button class="btn btn-secondary" style="margin-top:12px" @click="printNote('gp')">Print GP summary</button>
+    </div>
+
+    <div x-show="homeNote">
+      <div class="divider"></div>
+      <p class="section-heading">Note for OBOS Housing Officer</p>
+      <div x-html="homeNote" style="font-size:14px;line-height:1.75;color:var(--ink-mid)"></div>
+      <button class="btn btn-secondary" style="margin-top:12px" @click="printNote('housing')">Print Housing Officer note</button>
+    </div>
+
+    <div x-show="communityNote">
+      <div class="divider"></div>
+      <p class="section-heading">Note for Community Captain</p>
+      <div x-html="communityNote" style="font-size:14px;line-height:1.75;color:var(--ink-mid)"></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" @click="screen='reports'">Back to my reports</button>
+    </div>
+    <p class="note" style="margin-top:16px">Closing this tab will permanently clear all your data. Nothing is held on any server.</p>
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+// ── Question definitions ─────────────────────────────────────────────────────
+const QUESTIONS = [
+  // Section 1: About Your Home
+  { key:'s1q1', section:1, sectionName:'About Your Home', type:'open', optional:false,
+    text:'How are things with your home — your apartment, the building, the way you get in and out?' },
+  { key:'s1q2', section:1, sectionName:'About Your Home', type:'open', optional:true,
+    text:'Is there anything in or around your home that feels harder, or more frustrating, than it should?' },
+  { key:'s1q3', section:1, sectionName:'About Your Home', type:'open', optional:true,
+    text:'How are things with your neighbours and the wider building community?' },
+  { key:'s1q4', section:1, sectionName:'About Your Home', type:'open', optional:true,
+    text:'Is there anything else about your home or surroundings you would like OBOS to know?' },
+  // Section 2: About You
+  { key:'s2q1', section:2, sectionName:'About You', type:'open', optional:false,
+    text:'What is most important to you in your day-to-day life right now?' },
+  { key:'s2q2', section:2, sectionName:'About You', type:'open', optional:false,
+    text:'What does a good day look like for you?' },
+  { key:'s2q3', section:2, sectionName:'About You', type:'open', optional:false,
+    text:'What are you most proud of in how you manage your life?' },
+  { key:'s2q4', section:2, sectionName:'About You', type:'open', optional:false,
+    text:'Who matters most to you? Who do you like to stay connected with?' },
+  { key:'s2q5', section:2, sectionName:'About You', type:'open', optional:false,
+    text:'Is there something you have always done, or always been, that feels very much like you?' },
+  // Section 3: How Things Are Going
+  { key:'s3q1', section:3, sectionName:'How Things Are Going', type:'open', optional:false,
+    text:'What are you enjoying most at the moment?' },
+  { key:'s3q2', section:3, sectionName:'How Things Are Going', type:'open', optional:true,
+    text:'Is there anything that feels harder than it used to?' },
+  { key:'s3q3', section:3, sectionName:'How Things Are Going', type:'scale', optional:false,
+    text:'How do you feel about getting around and doing physical things day to day?',
+    scaleOptions:["It's going well","It varies","It feels harder than it was"] },
+  { key:'s3q4', section:3, sectionName:'How Things Are Going', type:'scale', optional:false,
+    text:'How do you feel about your memory and concentration?',
+    note:'This is not a memory test. If memory support would be useful to you, there are gentle ways to help with that.',
+    scaleOptions:["It's going well","It varies","It feels harder than it was"] },
+  { key:'s3q5', section:3, sectionName:'How Things Are Going', type:'open', optional:true,
+    text:'Do you ever feel lonely or less connected to people than you would like?' },
+  { key:'s3q6', section:3, sectionName:'How Things Are Going', type:'scale', optional:false,
+    text:'How confident do you feel about managing things at home independently?',
+    scaleOptions:["Very confident","It varies","Less confident than I was"] },
+  // Section 4: What Matters About the Future
+  { key:'s4q1', section:4, sectionName:'What Matters About the Future', type:'open', optional:false,
+    text:'If things stay broadly as they are, what would you most want to make sure stays the same?' },
+  { key:'s4q2', section:4, sectionName:'What Matters About the Future', type:'open', optional:true,
+    text:'Is there anything you would love to do more of, or get back to?' },
+  { key:'s4q3', section:4, sectionName:'What Matters About the Future', type:'open', optional:true,
+    text:'When you think about the future, is there anything you hope for?' },
+  { key:'s4q4', section:4, sectionName:'What Matters About the Future', type:'open', optional:true,
+    text:'Is there anything about the future that you find yourself worrying about?' },
+];
+
+// Section question counts for progress
+const SECTION_STARTS = {1:0, 2:4, 3:9, 4:15};
+const SECTION_LENGTHS = {1:4, 2:5, 3:6, 4:4};
+
+// Opus model — update per §10.2 Opus hardline rule
+const MODEL = 'claude-opus-4-6';
+
+// ── Alpine App ───────────────────────────────────────────────────────────────
+function obosApp() {
+  return {
+    // ── Config
+    apiKey: '',
+    screen: 'apikey',
+
+    // ── Resident identity
+    residentName: '',
+    nameStyle: 'first',
+    formalTitle: 'Mr',
+    formalSurname: '',
+
+    // ── Question flow
+    qIndex: 0,
+    textInput: '',
+    scaleInput: '',
+    sayMoreInput: '',
+    isProcessing: false,
+    lastQ: null,
+
+    // ── Reflection
+    reflection: '',
+
+    // ── Skip tracking
+    skipCount: 0,
+    skipNote: false,
+
+    // ── Safety
+    safetyEventFired: false,
+
+    // ── Voice
+    isListening: false,
+    voiceTarget: 'text',
+    recognition: null,
+
+    // ── Answers (Iron Curtain: homeAnswers ≠ wellnessAnswers)
+    homeAnswers: {},    // s1q1–s1q4 only
+    wellnessAnswers: {},// s2q1–s4q4 only
+
+    // ── Reports
+    wellnessReport: '',
+    homeReport: '',
+    activeTab: 'wellness',
+    generatingMsg: 'Reading your conversation...',
+
+    // ── Inferred link
+    linkSupplementaryQ: '',
+    linkStatement: '',
+    linkApproved: false,
+
+    // ── Routing
+    shareGP: false,
+    shareHousing: false,
+    shareCommunity: false,
+
+    // ── Generated notes (Iron Curtain enforced at API level below)
+    gpSummary: '',
+    homeNote: '',
+    communityNote: '',
+
+    // ── Computed ─────────────────────────────────────────────
+
+    get currentQ() { return QUESTIONS[this.qIndex] || null; },
+    get isSection1() { return (QUESTIONS[this.qIndex]?.section ?? 0) === 1; },
+    get displayName() {
+      if (this.nameStyle === 'skip' || !this.residentName) return '';
+      if (this.nameStyle === 'formal') return `${this.formalTitle} ${this.formalSurname}`.trim();
+      return this.residentName.trim();
+    },
+    get sectionQNum() {
+      const q = QUESTIONS[this.qIndex];
+      if (!q) return 1;
+      return this.qIndex - SECTION_STARTS[q.section] + 1;
+    },
+    get sectionQTotal() {
+      const q = QUESTIONS[this.qIndex];
+      if (!q) return 1;
+      return SECTION_LENGTHS[q.section];
+    },
+    get progressPct() {
+      const q = QUESTIONS[this.qIndex];
+      if (!q) return 0;
+      return Math.round((this.sectionQNum / this.sectionQTotal) * 100);
+    },
+    get canSubmit() {
+      const q = this.currentQ;
+      if (!q) return false;
+      if (q.type === 'open') return this.textInput.trim().length > 0;
+      if (q.type === 'scale') return this.scaleInput.length > 0;
+      return false;
+    },
+
+    // ── Lifecycle ────────────────────────────────────────────
+
+    init() {
+      // Voice support detection
+      this.voiceSupported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    },
+
+    setApiKey() {
+      if (!this.apiKey.trim()) return;
+      this.screen = 'threshold';
+    },
+
+    goHandshake() {
+      if (this.nameStyle === 'formal') {
+        this.residentName = `${this.formalTitle} ${this.formalSurname}`.trim();
+      }
+      this.screen = 'handshake';
+    },
+
+    resetInput() {
+      this.textInput = '';
+      this.scaleInput = '';
+      this.sayMoreInput = '';
+      if (this.isListening) this.stopVoice();
+    },
+
+    storeAnswer(key, value) {
+      // Iron Curtain: Section 1 → homeAnswers, Sections 2-4 → wellnessAnswers
+      const q = QUESTIONS.find(q => q.key === key);
+      if (!q) return;
+      if (q.section === 1) {
+        this.homeAnswers[key] = value;
+      } else {
+        this.wellnessAnswers[key] = value;
+      }
+    },
+
+    // ── Navigation ───────────────────────────────────────────
+
+    advanceFromReflection() {
+      const justAnsweredIndex = QUESTIONS.findIndex(q => q.key === this.lastQ?.key);
+      this.qIndex = justAnsweredIndex + 1;
+      this.resetInput();
+
+      // After s1q4 (index 3) → WILL/WILL NOT
+      if (justAnsweredIndex === 3) {
+        this.screen = 'willwillnot';
+      } else if (this.qIndex >= QUESTIONS.length) {
+        this.startGenerating();
+      } else {
+        this.screen = 'question';
+      }
+    },
+
+    skipQuestion() {
+      const key = QUESTIONS[this.qIndex]?.key;
+      if (key) this.storeAnswer(key, '');
+      this.skipCount++;
+      if (this.skipCount === 3) this.skipNote = true;
+      if (this.skipCount >= 6) { this.screen = 'skipofframp'; return; }
+
+      const currentIndex = this.qIndex;
+      this.qIndex++;
+      this.resetInput();
+
+      if (currentIndex === 3) {
+        this.screen = 'willwillnot';
+      } else if (this.qIndex >= QUESTIONS.length) {
+        this.startGenerating();
+      } else {
+        this.screen = 'question';
+      }
+    },
+
+    resumeAfterPause() {
+      this.resetInput();
+      this.screen = 'question';
+    },
+
+    earlyEnd() {
+      // If we have some Section 1 answers, offer home report
+      const hasHome = Object.values(this.homeAnswers).some(v => v.trim());
+      const hasWellness = Object.values(this.wellnessAnswers).some(v => v.trim());
+      if (hasHome || hasWellness) {
+        this.startGenerating();
+      } else {
+        this.screen = 'thankyou';
+      }
+    },
+
+    // ── Answer submission ─────────────────────────────────────
+
+    async submitAnswer() {
+      const q = this.currentQ;
+      if (!q || !this.canSubmit) return;
+
+      let answer = '';
+      if (q.type === 'open') {
+        answer = this.textInput.trim();
+      } else if (q.type === 'scale') {
+        answer = this.scaleInput;
+        if (this.sayMoreInput.trim()) answer += '. ' + this.sayMoreInput.trim();
+      }
+
+      this.lastQ = q;
+      this.storeAnswer(q.key, answer);
+      this.isProcessing = true;
+
+      try {
+        // Four parallel classifiers — strict precedence per §5.1
+        const [crisis, safeguarding, hostility, reflect] = await Promise.all([
+          this.classify('crisis', q.text, answer),
+          this.classify('safeguarding', q.text, answer),
+          this.classify('hostility', q.text, answer),
+          this.generateReflection(q, answer),
+        ]);
+
+        this.isProcessing = false;
+
+        if (crisis === 'CRISIS') {
+          this.safetyEventFired = true;
+          this.screen = 'crisis';
+        } else if (safeguarding === 'SAFEGUARDING') {
+          this.safetyEventFired = true;
+          this.screen = 'safeguarding';
+        } else if (hostility === 'HOSTILE') {
+          this.screen = 'sovereigntypause';
+        } else {
+          this.reflection = reflect;
+          this.screen = 'reflecting';
+        }
+      } catch (e) {
+        console.error('Classifier error:', e);
+        this.isProcessing = false;
+        // Fail closed: if classifiers error, show reflection with a safe fallback
+        this.reflection = 'Thank you for sharing that.';
+        this.screen = 'reflecting';
+      }
+    },
+
+    // ── Report generation ─────────────────────────────────────
+
+    async startGenerating() {
+      this.screen = 'generating';
+      this.generatingMsg = 'Reading your conversation...';
+
+      try {
+        const tasks = [];
+        const hasHome = Object.values(this.homeAnswers).some(v => v?.trim());
+        const hasWellness = Object.values(this.wellnessAnswers).some(v => v?.trim());
+
+        if (hasWellness) tasks.push(this.generateWellnessReport());
+        else tasks.push(Promise.resolve(''));
+
+        if (hasHome) tasks.push(this.generateHomeReport());
+        else tasks.push(Promise.resolve(''));
+
+        this.generatingMsg = 'Preparing your Wellness and Home reports...';
+        const [wellness, home] = await Promise.all(tasks);
+        this.wellnessReport = wellness;
+        this.homeReport = home;
+
+        // Candidate link detection (only if both bodies of content exist)
+        if (hasHome && hasWellness && !this.safetyEventFired) {
+          this.generatingMsg = 'Checking for connections...';
+          try {
+            const link = await this.detectCandidateLink();
+            if (link?.link && link.homeIssue && link.wellnessFragment) {
+              this.generatingMsg = 'Preparing one final question...';
+              const supQ = await this.generateSupplementaryQ(link.homeIssue, link.wellnessFragment);
+              this.linkSupplementaryQ = supQ;
+              this.screen = 'linkquestion';
+              return;
+            }
+          } catch(e) {
+            console.warn('Link detection failed silently:', e);
+          }
+        }
+
+        this.screen = 'reports';
+        this.activeTab = this.wellnessReport ? 'wellness' : 'home';
+
+      } catch (e) {
+        console.error('Report generation error:', e);
+        this.generatingMsg = 'Something went wrong. Your conversation is preserved — please try again.';
+      }
+    },
+
+    async linkAnswer(choice) {
+      if (choice === 'yes' && !this.safetyEventFired) {
+        try {
+          const stmt = await this.generateLinkStatement();
+          this.linkStatement = stmt;
+          this.screen = 'linkconsent';
+        } catch(e) {
+          this.screen = 'reports';
+        }
+      } else {
+        this.screen = 'reports';
+        this.activeTab = this.wellnessReport ? 'wellness' : 'home';
+      }
+    },
+
+    approveLinkage() {
+      this.linkApproved = true;
+      this.screen = 'reports';
+      this.activeTab = this.wellnessReport ? 'wellness' : 'home';
+    },
+
+    async confirmRouting() {
+      this.screen = 'generating_notes';
+      const tasks = [];
+
+      if (this.shareGP && this.wellnessReport) tasks.push(this.generateGPSummary());
+      else tasks.push(Promise.resolve(''));
+
+      if (this.shareHousing && this.homeReport) tasks.push(this.generateHomeNote());
+      else tasks.push(Promise.resolve(''));
+
+      if (this.shareCommunity && this.wellnessReport) tasks.push(this.generateCommunityNote());
+      else tasks.push(Promise.resolve(''));
+
+      try {
+        const [gp, housing, community] = await Promise.all(tasks);
+        this.gpSummary = gp;
+        this.homeNote = housing;
+        this.communityNote = community;
+      } catch(e) {
+        console.error('Note generation error:', e);
+      }
+
+      this.screen = 'thankyou';
+    },
+
+    // ── Print ─────────────────────────────────────────────────
+
+    printReport() {
+      window.print();
+    },
+
+    printNote(type) {
+      const content = type === 'gp' ? this.gpSummary : this.homeNote;
+      const win = window.open('', '_blank');
+      win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>OBOS Home+ — ${type === 'gp' ? 'GP Summary' : 'Housing Note'}</title>
+        <style>body{font-family:Georgia,serif;max-width:600px;margin:40px auto;line-height:1.7;color:#2A2420;font-size:15px;}
+        h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9C8E84;margin:24px 0 8px;}
+        p{margin-bottom:12px;}</style></head>
+        <body><h1 style="font-size:22px;margin-bottom:32px">OBOS Home+</h1>${content}</body></html>`);
+      win.document.close();
+      win.print();
+    },
+
+    // ── Voice ─────────────────────────────────────────────────
+
+    toggleVoice(target = 'text') {
+      this.voiceTarget = target;
+      if (this.isListening) { this.stopVoice(); return; }
+      this.startVoice();
+    },
+
+    startVoice() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { alert('Voice input is not supported in this browser. Please use Chrome.'); return; }
+      this.recognition = new SR();
+      this.recognition.continuous = false;
+      this.recognition.interimResults = true;
+      this.recognition.lang = 'en-GB';
+
+      let silenceTimer = null;
+
+      this.recognition.onstart = () => { this.isListening = true; };
+
+      this.recognition.onresult = (e) => {
+        const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+        if (this.voiceTarget === 'saymore') this.sayMoreInput = transcript;
+        else this.textInput = transcript;
+        clearTimeout(silenceTimer);
+        silenceTimer = setTimeout(() => { if (this.isListening) this.stopVoice(); }, 2500);
+      };
+
+      this.recognition.onend = () => { this.isListening = false; };
+      this.recognition.onerror = () => { this.isListening = false; };
+      this.recognition.start();
+    },
+
+    stopVoice() {
+      if (this.recognition) { try { this.recognition.stop(); } catch(e) {} }
+      this.isListening = false;
+    },
+
+    // ── Core API call ─────────────────────────────────────────
+
+    async claudeCall(systemPrompt, userContent, maxTokens = 700) {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: maxTokens,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userContent }],
+        }),
+      });
+      if (!resp.ok) {
+        const err = await resp.text();
+        throw new Error(`API ${resp.status}: ${err}`);
+      }
+      const data = await resp.json();
+      return data.content?.[0]?.text ?? '';
+    },
+
+    // ── Classifiers (§5.1) ─────────────────────────────────────
+
+    async classify(type, question, answer) {
+      const prompts = {
+        crisis: `You are a safety classifier. Determine if the following text contains an EXPLICIT, PRESENT-TENSE, SELF-DIRECTED expression of: suicidal ideation, intent to self-harm, acute hopelessness framed as having nothing to live for, or imminent danger to self. Do NOT fire for: general sadness, grief, loneliness, past-tense difficulty, metaphorical language, or worry about the future. Respond with ONLY the word CRISIS or SAFE.`,
+        safeguarding: `You are a safety classifier. Determine if the following text contains an EXPLICIT, PRESENT-TENSE disclosure of: physical abuse, psychological abuse, financial abuse, coercive control, enforced isolation, neglect by a carer, or fear of a specific person in the context of harm. Respond with ONLY the word SAFEGUARDING or SAFE.`,
+        hostility: `You are a consent classifier. Determine if the following text expresses a CLEAR withdrawal of consent to continue this conversation, strong hostility toward the tool itself, or an explicit demand to stop. Do NOT fire for: mild frustration, scepticism, a single negative response, or general unhappiness. Respond with ONLY the word HOSTILE or ENGAGED.`,
+      };
+      const result = await this.claudeCall(
+        prompts[type],
+        `Question: ${question}\nAnswer: ${answer}`,
+        20
+      );
+      return result.trim().toUpperCase();
+    },
+
+    // ── Reflection (Iron Curtain enforced: section-scoped context) ──
+
+    async generateReflection(q, answer) {
+      // Section 1 reflections never receive wellness context; Sections 2-4 never receive home context
+      const isHome = q.section === 1;
+      const system = `You are OBOS Home+, a warm and unhurried conversation partner. Reflect back what the resident has just shared in 1–3 sentences. Do not advise, warn, diagnose, or recommend services. Do not mention OBOS, Housing Officers, reports, GPs, or any organisation. Do not ask another question. Simply name what was heard, with warmth and without judgement. ${isHome ? 'This is about their home and surroundings.' : 'This is about their personal life and what matters to them.'} Occasionally include a genuine affirming observation where it arises naturally. Keep it brief and human. Never make the tool feel like a problem-finder.`;
+      return await this.claudeCall(system, `Question: ${q.text}\nAnswer: ${answer}`, 180);
+    },
+
+    // ── Report generation (Iron Curtain at API context level) ─────
+
+    formatAnswers(answerObj) {
+      return Object.entries(answerObj)
+        .filter(([, v]) => v && v.trim())
+        .map(([k, v]) => {
+          const q = QUESTIONS.find(q => q.key === k);
+          return `${q ? q.text : k}: ${v}`;
+        }).join('\n\n');
+    },
+
+    async generateWellnessReport() {
+      // Context: ONLY wellnessAnswers — no homeAnswers
+      const answers = this.formatAnswers(this.wellnessAnswers);
+      if (!answers.trim()) return '';
+      const name = this.displayName || 'you';
+      const system = `You are generating a personal Wellness Report for a resident who has just completed a reflective conversation. Write with warmth in second person (you, your). Do not use clinical language. Structure your response as HTML with these four sections, each with a <h3> heading and a <p> or content below it:
+
+YOUR WORDS — Quote a short resonant phrase or sentence from their answer about what matters most in their daily life. Wrap it in a styled blockquote: <blockquote class="report-quote">.
+
+WHAT MATTERS MOST — This is the report headline. 2-3 warm sentences drawn from their answer about what they most want to stay the same. If they skipped that question, infer gently and begin "From what you shared...".
+
+YOUR OPPORTUNITIES — Describe only what they surfaced: interests, connections, capabilities, hopes. Use these domain names where relevant: Staying Well, Staying Sharp, Staying Steady, Staying Connected, Staying Busy, Staying Safe. Only mention domains they raised. 3-5 sentences.
+
+YOUR CHOICE — One affirming sentence about their agency over what happens next.
+
+Do NOT include any information about their home, building, or surroundings. That is kept entirely separate.`;
+      return await this.claudeCall(system, `Resident: ${name}\n\nConversation:\n${answers}`, 800);
+    },
+
+    async generateHomeReport() {
+      // Context: ONLY homeAnswers — no wellnessAnswers
+      const answers = this.formatAnswers(this.homeAnswers);
+      if (!answers.trim()) return '';
+      const name = this.displayName || 'the resident';
+      const system = `You are generating a Home Report for a resident from what they shared about their home and surroundings ONLY. Write in warm, factual, observational language. Do NOT include any clinical content, health information, or reference to anything about their personal life or wellbeing. Structure your response as HTML with these three sections, each with a <h3> heading:
+
+YOUR HOME — Observational paragraph (2-3 sentences) about their apartment, building, and access.
+
+YOUR NEIGHBOURHOOD — Observational paragraph (2-3 sentences) about neighbours and building community. If nothing was raised, write: No specific observations about neighbours were shared.
+
+YOUR CONCERNS — An itemised <ul class="concern-list"> of specific friction points raised (heating, lift, door, path, access, neighbour matter). Use their own words. If no concerns were raised, write: No specific concerns were raised.`;
+      return await this.claudeCall(system, `Resident: ${name}\n\nConversation:\n${answers}`, 600);
+    },
+
+    // ── Candidate link detection (§7.6) ──────────────────────
+
+    async detectCandidateLink() {
+      const homeContent = this.formatAnswers(this.homeAnswers);
+      const wellnessContent = this.formatAnswers(this.wellnessAnswers);
+      const system = `You are a connection-detection component. You will receive two sets of content from a conversation. Set A is about the resident's home. Set B is about their personal life and wellbeing. Determine if there is a SPECIFIC, PLAUSIBLE connection between a concrete home issue in Set A and a specific wellbeing observation in Set B. The connection must be concrete — a passing mention of "things being harder" does not qualify; a specific activity impaired by a specific home feature does. Be conservative: only return true if the connection is genuinely specific and plausible. Respond with ONLY valid JSON: {"link":true,"homeIssue":"brief description","wellnessFragment":"paraphrased neutral fragment, no clinical language"} or {"link":false}`;
+      const result = await this.claudeCall(system, `Set A (Home):\n${homeContent}\n\nSet B (Wellness):\n${wellnessContent}`, 200);
+      try {
+        return JSON.parse(result.replace(/```json|```/g, '').trim());
+      } catch(e) { return { link: false }; }
+    },
+
+    async generateSupplementaryQ(homeIssue, wellnessFragment) {
+      const system = `Generate a single gentle MI-style supplementary question for a resident. Present a possible connection between a home issue and a wellbeing observation without asserting the connection exists. Use the resident's own words for the home issue. Paraphrase the wellbeing observation neutrally. End with: "Would you say the [home issue] is affecting how you feel or how you manage day to day?" Return ONLY the question text.`;
+      return await this.claudeCall(system, `Home issue: ${homeIssue}\nWellness fragment: ${wellnessFragment}`, 120);
+    },
+
+    async generateLinkStatement() {
+      // This call has access to homeIssue (Section 1) and a binary flag ONLY — never Section 2-4 content directly
+      const name = this.displayName || 'The resident';
+      const system = `Generate a single sentence using this exact grammar: "[Name] has reported [home issue] and has indicated this is affecting their [wellbeing | day-to-day life | comfort at home]." Choose the most natural ending. Do not add clinical language, conditions, symptoms, or any other detail. Use the resident's own words for the home issue. Return ONLY the sentence.`;
+      return await this.claudeCall(system, `Name: ${name}\nHome issue: ${this.linkSupplementaryQ}`, 80);
+    },
+
+    // ── Routed notes (Iron Curtain enforced at context level) ──
+
+    async generateGPSummary() {
+      // Context: ONLY wellnessReport — no home content
+      const name = this.displayName || 'The resident';
+      const system = `You are preparing a plain-language summary for a GP or local authority, at the resident's request. Write in formal but non-clinical observational language. Use phrases like "The resident mentioned...", "They described...", "They noted...". Do not assign diagnoses. Structure as short paragraphs with <p> tags. End with: <p style="font-size:13px;color:#9C8E84;margin-top:20px;font-style:italic">This is an account of what the resident shared in a conversation on the OBOS Home+ tool. It is prepared at the resident's request to help them talk with their GP or local services. It is not a clinical assessment and does not replace professional judgement. The resident retains full authority over any decisions about their care.</p>`;
+      return await this.claudeCall(system, `Resident: ${name}\n\nWellness Report:\n${this.wellnessReport}`, 700);
+    },
+
+    async generateHomeNote() {
+      // Context: ONLY homeReport + linkStatement if approved — no wellness content
+      const name = this.displayName || 'The resident';
+      const linkAddition = this.linkApproved && this.linkStatement
+        ? `\n\nAdditional resident statement (approved by resident): ${this.linkStatement}`
+        : '';
+      const system = `You are preparing a factual note for an OBOS Housing Officer, at the resident's request. Write clearly and factually about home and property matters only. Do not include any health, wellbeing, or personal life information. Structure as short paragraphs with <p> tags. End with: <p style="font-size:13px;color:#9C8E84;margin-top:20px;font-style:italic">This note has been prepared at the resident's request from a conversation on the OBOS Home+ tool. It records what the resident chose to share about their home and surroundings only. The OBOS Home+ also produces a separate Wellness Report which is not, and will never be, sent to the Housing Officer. The resident retains full authority over how this matter is taken forward.</p>`;
+      return await this.claudeCall(system, `Resident: ${name}\n\nHome Report:\n${this.homeReport}${linkAddition}`, 600);
+    },
+
+    async generateCommunityNote() {
+      // Context: ONLY wellnessReport — no home content
+      const name = this.displayName || 'The resident';
+      const system = `You are preparing a connection note for a Community Captain or social worker, at the resident's request. The frame is contribution and connection — not need or deficit. Write warmly and factually about the resident's interests, connections, and what they would welcome from their community. Do not include home or building information. Structure as short paragraphs with <p> tags. End with: <p style="font-size:13px;color:#9C8E84;margin-top:20px;font-style:italic">This note has been prepared at the resident's request. They have asked to be invited to appropriate community activities when they arise. Please honour a decline as the conversation working as designed. The OBOS Housing Officer is not, and will not be, sent this note.</p>`;
+      return await this.claudeCall(system, `Resident: ${name}\n\nWellness Report:\n${this.wellnessReport}`, 500);
+    },
+
+  }; // end return
+} // end obosApp
+</script>
+</body>
+</html>
