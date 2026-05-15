@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBOS Styreleder Dashboard - The Complete Holistic View</title>
+<style>
+  :root {
+    /* OBOS Brand Palette */
+    --obos-blue: #1B3F8B;
+    --obos-blue-deep: #122B61;
+    --obos-mint: #bedfec;
+    --obos-mint-deep: #5b9eb5;
+    --obos-green: #006241;
+    --obos-green-bright: #69B34C;
+    --bg-soft: #f6f7fa;
+    --white: #ffffff;
+    --text-main: #1f2433;
+    --text-muted: #4d5468;
+    --text-faint: #8089a0;
+    --border: #d8dce8;
+    --urgent: #b04545;
+    --urgent-bg: #fbeae8;
+    --routine: #d9822b;
+    --routine-bg: #fdf5e6;
+    --sec-color: #5a6378;
+    --sec-bg: #eef0f4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body { 
+    background-color: var(--bg-soft); 
+    color: var(--text-main); 
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; 
+    line-height: 1.5; 
+    -webkit-font-smoothing: antialiased; 
+  }
+  
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+  /* --- HEADER --- */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .brand h1 { font-size: 24px; color: var(--obos-blue-deep); margin-bottom: 4px; }
+  .privacy-badge { 
+    display: inline-flex; align-items: center; gap: 8px; 
+    font-size: 12px; font-weight: 600; color: var(--text-muted); 
+    background: #e8ecf2; padding: 6px 12px; border-radius: 20px; 
+  }
+
+  /* --- VINTER-TRYGG BANNER --- */
+  .vinter-banner { 
+    background: var(--obos-blue-deep); color: var(--white); 
+    border-radius: 12px; padding: 16px 24px; display: flex; 
+    justify-content: space-between; align-items: center; 
+    margin-bottom: 24px; box-shadow: 0 4px 12px rgba(18, 43, 97, 0.15); 
+    flex-wrap: wrap; gap: 16px; 
+  }
+  .vt-info { display: flex; align-items: center; gap: 16px; }
+  .vt-icon { 
+    background: rgba(255,255,255,0.2); width: 48px; height: 48px; 
+    border-radius: 12px; display: flex; align-items: center; 
+    justify-content: center; font-size: 24px; 
+  }
+  .vt-text h3 { font-size: 16px; margin-bottom: 2px; color: var(--obos-mint); display: flex; align-items: center; gap: 8px; }
+  .vt-text h3 span { background: var(--urgent); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .vt-text p { font-size: 13px; opacity: 0.9; }
+  .vt-action button { 
+    background: var(--obos-mint); color: var(--obos-blue-deep); 
+    border: none; padding: 10px 16px; font-weight: 700; 
+    border-radius: 6px; cursor: pointer; transition: 0.2s; 
+  }
+  .vt-action button:hover { background: white; }
+
+  /* --- STATS ROW --- */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+  .stat-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 4px; }
+  .stat-card .value { font-size: 28px; font-weight: 700; color: var(--obos-blue-deep); }
+
+  /* --- HUD PANELS --- */
+  .hud-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 32px; }
+  .panel { 
+    background: var(--white); border-radius: 12px; border: 1px solid var(--border); 
+    padding: 20px; box-shadow: 0 2px 8px rgba(31, 36, 51, 0.02); 
+    display: flex; flex-direction: column; gap: 16px; 
+  }
+  .panel-header { 
+    font-size: 14px; font-weight: 700; color: var(--text-muted); 
+    text-transform: uppercase; letter-spacing: 0.05em; display: flex; 
+    justify-content: space-between; align-items: center; 
+    padding-bottom: 12px; border-bottom: 1px solid var(--bg-soft); 
+  }
+  
+  .node-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .node { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: #fafbfc; }
+  .node-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .node-info h4 { font-size: 12px; color: var(--text-main); margin-bottom: 2px; }
+  .node-info p { font-size: 11px; font-weight: 700; }
+
+  /* Dynamic HUD States */
+  .state-ok { border-color: rgba(91, 158, 181, 0.3); } 
+  .state-ok
